@@ -5,6 +5,17 @@ import time
 
 from lib import entity
 
+def tile_distance(tile_a, tile_b):
+    return abs(tile_a.row - tile_b.row) + abs(tile_a.column - tile_b.column)
+
+def gather_entities(root_entity):
+    entities = [root_entity]
+
+    for entity in entities:
+        entities.extend(entity.get_children())
+
+    return entities
+
 class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
         super().__init__()
@@ -27,7 +38,7 @@ class TileGrid(entity.Entity):
         for r in range(rows):
             row = []
             for c in range(columns):
-                tile = Tile()
+                tile = Tile(row=r, column=c)
                 row.append(tile)
 
                 # Build a list of all tiles. Helps when we need
@@ -66,8 +77,10 @@ class TileGrid(entity.Entity):
         pass
 
 class Tile(entity.Entity):
-    def __init__(self):
+    def __init__(self, row, column):
         super().__init__()
+        self.row = row
+        self.column = column
         self.north = None
         self.south = None
         self.east = None
@@ -76,6 +89,12 @@ class Tile(entity.Entity):
     def get_neighbor_tiles(self):
         return list(filter(None, [self.north, self.south, self.east, self.west]))
 
+    def get_child_of_kind(self, kind):
+        for child in self.get_children():
+            if isinstance(child, kind):
+                return child
+        return None
+
     def update(self, delta):
         pass
 
@@ -83,161 +102,164 @@ class Tile(entity.Entity):
         content = "".join(map(str, self.get_children()))
         print("[%s]" % content.rjust(5), end="")
 
-class WorkerSpawner(entity.Entity):
-    def __init__(self, tile_grid, max_workers):
+class SpiceSpawner(entity.Entity):
+    def __init__(self, tile_grid, max_spices):
         super().__init__()
         self.tile_grid = tile_grid
-        self.max_workers = max_workers
-        self.workers = []
+        self.max_spices = max_spices
+        self.spices = []
 
     def update(self, delta):
-        if len(self.workers) == self.max_workers:
+        if len(self.spices) == self.max_spices:
             return
 
-        worker = Worker()
+        spice = Spice()
 
         tile = tile_grid.get_random_tile()
-        tile.add_child(worker)
+        tile.add_child(spice)
 
-        self.workers.append(worker)
-
-class ResourceSpawner(entity.Entity):
-    def __init__(self, tile_grid, max_resources):
-        super().__init__()
-        self.tile_grid = tile_grid
-        self.max_resources = max_resources
-        self.resources = []
-
-    def update(self, delta):
-        if len(self.resources) == self.max_resources:
-            return
-
-        resource = Resource()
-
-        tile = tile_grid.get_random_tile()
-        tile.add_child(resource)
-
-        self.resources.append(resource)
+        self.spices.append(spice)
 
 class World(entity.Entity):
-    def __init__(self, tile_grid, resource_spawner, worker_spawner):
+    def __init__(self, tile_grid, spice_spawner):
         super().__init__()
 
         self.tile_grid = tile_grid
-        self.resource_spawner = resource_spawner
-        self.worker_spawner = worker_spawner
+        self.spice_spawner = spice_spawner
 
         self.add_child(tile_grid)
-        self.add_child(resource_spawner)
-        self.add_child(worker_spawner)
+        self.add_child(spice_spawner)
 
     def update(self, delta):
         pass
 
-class Resource(entity.Entity):
+class Spice(entity.Entity):
     def __init__(self):
         super().__init__()
 
     def __repr__(self):
-        return "R"
+        return "S"
 
     def update(self, delta):
         pass
 
-class Worker(entity.Entity):
+class Harvester(entity.Entity):
+    """Harvesters:
+        [x] Spawn from a Base
+        [x] Gather spice
+        [x] Return spice to the Base they spawned at
     """
-    Workers can
-        Be incentivized to attack competing workers
-        Be incentivized to find resources of a type
-        Be told where things are
-        Be hired
-        Hold resources
-        Deposit resources
-        Occupy tiles
-        Have its vision enhanced
-        Make value-based decisions
-        Make preservation-based decisions (if its under attack)
-        Die
-        Steal things
-    """
-    def __init__(self):
+    def __init__(self, base):
         super().__init__()
-        self.choices = [
-            self.move,
-        ]
+        self.base = base
+        self.spice = None
 
     def __repr__(self):
-        return "W"
+        if self.spice:
+            return "H(S)"
+        else:
+            return "H( )"
 
-    def move(self):
-        tile = self.get_parent()
+    def find_spice(self, tile):
         tiles = tile.get_neighbor_tiles()
+        goals = []
+
+        for t in tiles:
+            if t.get_child_of_kind(Spice):
+                goals.append(t)
 
         tile.remove_child(self)
 
-        random.choice(tiles).add_child(self)
+        if len(goals) > 0:
+            random.choice(goals).add_child(self)
+        else:
+            random.choice(tiles).add_child(self)
+
+    def collect_spice(self, tile, spice):
+        tile.remove_child(spice)
+
+        self.add_child(spice)
+        self.spice = spice
+
+    def deposit_spice(self, tile, base):
+        base.add_child(self.spice)
+
+        self.remove_child(self.spice)
+        self.spice = None
+
+    def find_base(self, tile):
+        distance = tile_distance(tile, self.base.get_tile())
+        distance_tile = tile
+
+        tiles = tile.get_neighbor_tiles()
+        goals = []
+
+        for t in tiles:
+            d = tile_distance(t, self.base.get_tile())
+            if d < distance:
+                distance = d
+                distance_tile = t
+            if t.get_child_of_kind(Base):
+                goals.append(t)
+
+        tile.remove_child(self)
+
+        if len(goals) > 0:
+            random.choice(goals).add_child(self)
+        else:
+            distance_tile.add_child(self)
 
     def update(self, delta):
-        random.choice(self.choices)()
+        tile = self.get_parent()
 
-def gather_entities(root_entity):
-    entities = [root_entity]
+        if self.spice:
+            base = tile.get_child_of_kind(Base)
 
-    for entity in entities:
-        entities.extend(entity.get_children())
+            if base:
+                self.deposit_spice(tile, base)
+            else:
+                self.find_base(tile)
+        else:
+            spice = tile.get_child_of_kind(Spice)
 
-    return entities
+            if spice:
+                self.collect_spice(tile, spice)
+            else:
+                self.find_spice(tile)
+
+class Base(entity.Entity):
+    """Base:
+        - [x] Spawns Harvesters
+        - [x] Accept Spice from Harvesters
+        - [ ] Use Spice to create more Harvesters
+    """
+    def __init__(self):
+        super().__init__()
+        self.harvesters = []
+        self.harvesters_needed = 1
+
+    def __repr__(self):
+        return "B"
+
+    def get_tile(self):
+        return self.get_parent()
+
+    def update(self, delta):
+        if len(self.harvesters) < self.harvesters_needed:
+            harvester = Harvester(self)
+
+            self.harvesters.append(harvester)
+            self.add_sibling(harvester)
 
 if __name__ == "__main__":
-    # A simulation. You can make decisions which influence
-    # the simulation, but you cannot interact directly with
-    # any of the simulated items.
-    #
-    # A simulation with bottlenecks. Your decisions may fix
-    # the current bottleneck in the simulation, but there will
-    # always be a new bottleneck.
-    #
-    # A simulation which can deplete your resources. Your
-    # decisions may deplete your resources. If your resources
-    # reach zero, you lose.
-    #
-    # A simulation which has no end. Your decisions may increase
-    # your resources. There is no maximum. There is no win condition,
-    # only survival and accumulation of resources.
-    #
-    # A simulation has:
-    #   Universe - the container of the entire simulation
-    #   Space - the presense of things
-    #   Time - the passage of time
-    #   Agents - temporal entities which can be influenced
-    #   Resources - permanent entities which can be traded, transmuted
-    #   Environment - conditions which influence agents and resources
-    #
-    #   Currency
-    #   Soil
-    #   Minerals
-    #   Metals
-    #   Weather
-    #
-    #   What is the span of control?
-    #   What are the ways in which a simulation participant can
-    #   interact to gain resources?
-    #
-    #   Lets start with something simple:
-    #       A 2d plane
-    #       A few resources of different values
-    #       Hire agents to farm resources, and return them to a location for
-    #           some amount of currency.
-    #       Bottleneck: the resources respawn slowly, the distance between
-    #           the resources and the deposit. Continuing to pay the worker
-    #           will eventually result in losing the game.
+    base = Base()
 
     tile_grid = TileGrid(10, 10)
+    tile_grid.get_tile(0, 0).add_child(base)
 
     world = World(
         tile_grid=tile_grid,
-        resource_spawner=ResourceSpawner(tile_grid, 10),
-        worker_spawner=WorkerSpawner(tile_grid, 2),
+        spice_spawner=SpiceSpawner(tile_grid, 10),
     )
 
     world_tick = 1
@@ -254,7 +276,7 @@ if __name__ == "__main__":
         for entity in entities:
             entity.update(world_tick)
 
-        print("=" * 70)
+        print(" " * 70)
 
         for row in world.tile_grid.grid:
             for tile in row:

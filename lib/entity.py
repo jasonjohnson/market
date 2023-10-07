@@ -15,6 +15,11 @@ class Entity(object):
         child.parent = self
         self.children.append(child)
     
+    def add_sibling(self, sibling):
+        if not self.parent:
+            raise LookupError("Entity has no parent. Cannot add sibling.")
+        self.parent.add_child(sibling)
+    
     def remove_child(self, child):
         self.children.remove(child)
 
@@ -39,4 +44,4 @@ class Entity(object):
 
     def update(self, delta):
         """Called once every iteration of the game loop."""
-        raise NotImplementedError
+        pass
