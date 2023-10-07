@@ -21,6 +21,7 @@ class Entity(object):
         self.parent.add_child(sibling)
     
     def remove_child(self, child):
+        child.parent = None
         self.children.remove(child)
 
     def get_children(self):

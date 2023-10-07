@@ -177,14 +177,10 @@ class Harvester(entity.Entity):
 
     def collect_spice(self, tile, spice):
         tile.remove_child(spice)
-
-        self.add_child(spice)
         self.spice = spice
 
     def deposit_spice(self, tile, base):
-        base.add_child(self.spice)
-
-        self.remove_child(self.spice)
+        base.deposit_spice(self.spice)
         self.spice = None
 
     def find_base(self, tile):
@@ -231,12 +227,16 @@ class Base(entity.Entity):
     """Base:
         - [x] Spawns Harvesters
         - [x] Accept Spice from Harvesters
-        - [ ] Use Spice to create more Harvesters
+        - [x] Use Spice to create more Harvesters
     """
-    def __init__(self):
+    def __init__(self, starting_spice):
         super().__init__()
         self.harvesters = []
-        self.harvesters_needed = 1
+        self.harvester_construction_cost = 1
+        self.spices = []
+
+        for s in range(starting_spice):
+            self.spices.append(Spice())
 
     def __repr__(self):
         return "B"
@@ -244,22 +244,31 @@ class Base(entity.Entity):
     def get_tile(self):
         return self.get_parent()
 
+    def deposit_spice(self, spice):
+        self.spices.append(spice)
+
     def update(self, delta):
-        if len(self.harvesters) < self.harvesters_needed:
+        if len(self.spices) >= self.harvester_construction_cost:
+            del self.spices[:self.harvester_construction_cost]
+            
             harvester = Harvester(self)
 
             self.harvesters.append(harvester)
             self.add_sibling(harvester)
 
 if __name__ == "__main__":
-    base = Base()
+    base = Base(
+        starting_spice=1
+    )
 
     tile_grid = TileGrid(10, 10)
     tile_grid.get_tile(0, 0).add_child(base)
 
+    spice_spawner = SpiceSpawner(tile_grid, 10)
+
     world = World(
         tile_grid=tile_grid,
-        spice_spawner=SpiceSpawner(tile_grid, 10),
+        spice_spawner=spice_spawner,
     )
 
     world_tick = 1
@@ -276,6 +285,9 @@ if __name__ == "__main__":
         for entity in entities:
             entity.update(world_tick)
 
+        print(" " * 70)
+        print("Base[spice]: %d" % len(base.spices))
+        print("Spice: %s" % str(spice_spawner.spices))
         print(" " * 70)
 
         for row in world.tile_grid.grid:
