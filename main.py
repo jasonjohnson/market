@@ -1,47 +1,11 @@
-import collections
+
 import pprint
 import random
 import time
 
-class Entity(object):
-    BUS = collections.defaultdict(list)
+from lib import entity
 
-    def __init__(self):
-        self.parent = None
-        self.children = []
-
-    def get_parent(self):
-        return self.parent
-
-    def add_child(self, child):
-        child.parent = self
-        self.children.append(child)
-    
-    def remove_child(self, child):
-        self.children.remove(child)
-
-    def get_children(self):
-        return self.children
-    
-    def get_siblings(self):
-        if not self.parent:
-            return []
-        # TODO: this needs to filter out "self" without modifying the
-        #   list of children.
-        return self.parent.get_children()
-
-    def emit(self, signal, *args, **kwargs):
-        for receiver in Entity.BUS[signal]:
-            receiver(*args, **kwargs)
-
-    def subscribe(self, signal, receiver):
-        Entity.BUS[signal].append(receiver)
-
-    def update(self, delta):
-        """Called once every iteration of the game loop."""
-        raise NotImplementedError
-
-class TileGrid(Entity):
+class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
         super().__init__()
         self.tiles = []
@@ -101,7 +65,7 @@ class TileGrid(Entity):
     def update(self, delta):
         pass
 
-class Tile(Entity):
+class Tile(entity.Entity):
     def __init__(self):
         super().__init__()
         self.north = None
@@ -119,7 +83,7 @@ class Tile(Entity):
         content = "".join(map(str, self.get_children()))
         print("[%s]" % content.rjust(5), end="")
 
-class WorkerSpawner(Entity):
+class WorkerSpawner(entity.Entity):
     def __init__(self, tile_grid, max_workers):
         super().__init__()
         self.tile_grid = tile_grid
@@ -137,7 +101,7 @@ class WorkerSpawner(Entity):
 
         self.workers.append(worker)
 
-class ResourceSpawner(Entity):
+class ResourceSpawner(entity.Entity):
     def __init__(self, tile_grid, max_resources):
         super().__init__()
         self.tile_grid = tile_grid
@@ -155,7 +119,7 @@ class ResourceSpawner(Entity):
 
         self.resources.append(resource)
 
-class World(Entity):
+class World(entity.Entity):
     def __init__(self, tile_grid, resource_spawner, worker_spawner):
         super().__init__()
 
@@ -170,7 +134,7 @@ class World(Entity):
     def update(self, delta):
         pass
 
-class Resource(Entity):
+class Resource(entity.Entity):
     def __init__(self):
         super().__init__()
 
@@ -180,7 +144,7 @@ class Resource(Entity):
     def update(self, delta):
         pass
 
-class Worker(Entity):
+class Worker(entity.Entity):
     """
     Workers can
         Be incentivized to attack competing workers
