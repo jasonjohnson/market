@@ -3,19 +3,6 @@ import pprint
 import random
 import time
 
-# Need some infrastructure to scale this
-# World == Scene
-# World must contain objects. Scene graph? Parent/child?
-# Must be able to emit and receive signals
-#   Ex: when a resource is collected
-#   Ex: when a worker moves
-# Every entity has:
-#   One parent
-#   Many children
-# Every entity can:
-#   Emit signals w/ parameters
-#   Subscribe to signals and receive parameters
-
 class Entity(object):
     BUS = collections.defaultdict(list)
 
@@ -27,9 +14,11 @@ class Entity(object):
         return self.parent
 
     def add_child(self, child):
-        # Add events? "on-added"
         child.parent = self
         self.children.append(child)
+    
+    def remove_child(self, child):
+        self.children.remove(child)
 
     def get_children(self):
         return self.children
@@ -37,6 +26,8 @@ class Entity(object):
     def get_siblings(self):
         if not self.parent:
             return []
+        # TODO: this needs to filter out "self" without modifying the
+        #   list of children.
         return self.parent.get_children()
 
     def emit(self, signal, *args, **kwargs):
@@ -57,6 +48,15 @@ class TileGrid(Entity):
         self.grid = []
         self.generate(rows, columns)
         self.link()
+
+        for tile in self.tiles:
+            self.add_child(tile)
+    
+    def get_tile(self, row, column):
+        return self.grid[row][column]
+    
+    def get_random_tile(self):
+        return random.choice(self.tiles)
 
     def generate(self, rows, columns):
         """Generate a 2-dimensional grid of tiles."""
@@ -99,7 +99,7 @@ class TileGrid(Entity):
                     tile.south = self.grid[i + 1][j]
 
     def update(self, delta):
-        print("TileGrid::update(%d)" % delta)
+        pass
 
 class Tile(Entity):
     def __init__(self):
@@ -109,144 +109,119 @@ class Tile(Entity):
         self.east = None
         self.west = None
 
-class World(Entity):
-    def __init__(self):
-        super().__init__()
-
-        self.ticks = 0
-        self.rows = 10
-        self.columns = 10
-        self.grid = []
-        self.tiles = []
-        self.resources = []
-        self.workers = []
-
-    def add_resource(self, resource):
-        self.resources.append(resource)
-
-    def add_worker(self, worker):
-        # Inventory of all workers. The worker object should
-        # probably be attached directly to a "Tile" object.
-        self.workers.append(worker)
-
-        # When added, we need a starting point.
-        self.tiles[worker.row][worker.column] = 'w'
-
-    def get_empty_tiles(self, quantity):
-        tiles = []
-
-        while len(tiles) < quantity:
-            r_row = random.randint(0, self.rows - 1)
-            r_column = random.randint(0, self.columns - 1)
-
-            tile = (r_row, r_column)
-
-            if not self.tiles[r_row][r_column] and tile not in tiles:
-                tiles.append((r_row, r_column))
-
-        return tiles
+    def get_neighbor_tiles(self):
+        return list(filter(None, [self.north, self.south, self.east, self.west]))
 
     def update(self, delta):
-        # Every update, make sure we have the right number of
-        # resources on tiles.
-        for resource in self.resources:
-            tiles_needed = resource.quantity - resource.spawned
-            tiles = self.get_empty_tiles(tiles_needed)
+        pass
 
-            for (row, column) in tiles:
-                self.tiles[row][column] = 'r'
-                resource.spawned += 1
+    def render(self):
+        content = "".join(map(str, self.get_children()))
+        print("[%s]" % content.rjust(5), end="")
 
-        # Every update, look around.
-        for worker in self.workers:
-            tiles = []
+class WorkerSpawner(Entity):
+    def __init__(self, tile_grid, max_workers):
+        super().__init__()
+        self.tile_grid = tile_grid
+        self.max_workers = max_workers
+        self.workers = []
 
-            if worker.row > 0:
-                tiles.append((worker.row - 1, worker.column))
-            
-            if worker.row < self.rows - 1:
-                tiles.append((worker.row + 1, worker.column))
+    def update(self, delta):
+        if len(self.workers) == self.max_workers:
+            return
 
-            if worker.column > 0:
-                tiles.append((worker.row, worker.column - 1))
+        worker = Worker()
 
-            if worker.column < self.columns - 1:
-                tiles.append((worker.row, worker.column + 1))
+        tile = tile_grid.get_random_tile()
+        tile.add_child(worker)
 
-            row, column = random.choice(tiles)
+        self.workers.append(worker)
 
-            # Vacate the current position
-            self.tiles[worker.row][worker.column] = None
+class ResourceSpawner(Entity):
+    def __init__(self, tile_grid, max_resources):
+        super().__init__()
+        self.tile_grid = tile_grid
+        self.max_resources = max_resources
+        self.resources = []
 
-            worker.row = row
-            worker.column = column
+    def update(self, delta):
+        if len(self.resources) == self.max_resources:
+            return
 
-            if self.tiles[worker.row][worker.column] == 'r':
-                worker.collected += 1
+        resource = Resource()
 
-            # Populate the new position
-            self.tiles[worker.row][worker.column] = 'w'
+        tile = tile_grid.get_random_tile()
+        tile.add_child(resource)
 
-        self.ticks += 1
+        self.resources.append(resource)
 
-        print("World Ticks: %d" % self.ticks)
-        #print("Worker Collection: %d" % self.workers[0].collected)
+class World(Entity):
+    def __init__(self, tile_grid, resource_spawner, worker_spawner):
+        super().__init__()
 
-        pprint.pprint(self.tiles)
+        self.tile_grid = tile_grid
+        self.resource_spawner = resource_spawner
+        self.worker_spawner = worker_spawner
 
+        self.add_child(tile_grid)
+        self.add_child(resource_spawner)
+        self.add_child(worker_spawner)
 
-
-
-# Make the Resource a subclass of Entity...
-# class Resource(object):
-#     def __init__(self, quantity):
-#         self.quantity = quantity
-#         self.spawned = 0
+    def update(self, delta):
+        pass
 
 class Resource(Entity):
     def __init__(self):
         super().__init__()
-        print("resource:init()")
-        self.quantity = 10
-        self.spawned = 0
 
-    def update(self, delta):
-        print("resource::update()")
+    def __repr__(self):
+        return "R"
 
-# How much does the worker know about the world?
-# Does it know where it is?
-class Worker(Entity):
-    def __init__(self):
-        super().__init__()
-
-        self.row = 0
-        self.column = 0
-        self.collected = 0
-        # Can be incentivized to attack competing workers
-        # Can be incentivized to find resources of a type
-        # Can hold resources
-        # Can deposit resources
-        # Can occupy tiles
-        # Can have its vision enhanced
-        # Can make value-based decisions
-        # Can make preservation-based decisions (if its under attack)
-        # Can die
-        # Can steal things from its employer
-        # Can be told where things are (like depositories)
-    
     def update(self, delta):
         pass
 
-class Player(object):
-    def __init__(self, currency):
-        self.currency = currency
+class Worker(Entity):
+    """
+    Workers can
+        Be incentivized to attack competing workers
+        Be incentivized to find resources of a type
+        Be told where things are
+        Be hired
+        Hold resources
+        Deposit resources
+        Occupy tiles
+        Have its vision enhanced
+        Make value-based decisions
+        Make preservation-based decisions (if its under attack)
+        Die
+        Steal things
+    """
+    def __init__(self):
+        super().__init__()
+        self.choices = [
+            self.move,
+        ]
+
+    def __repr__(self):
+        return "W"
+
+    def move(self):
+        tile = self.get_parent()
+        tiles = tile.get_neighbor_tiles()
+
+        tile.remove_child(self)
+
+        random.choice(tiles).add_child(self)
+
+    def update(self, delta):
+        random.choice(self.choices)()
 
 def gather_entities(root_entity):
     entities = [root_entity]
 
     for entity in entities:
         entities.extend(entity.get_children())
-    
+
     return entities
 
 if __name__ == "__main__":
@@ -292,37 +267,16 @@ if __name__ == "__main__":
     #       Bottleneck: the resources respawn slowly, the distance between
     #           the resources and the deposit. Continuing to pay the worker
     #           will eventually result in losing the game.
-    world = World()
-    world_tick = 1
 
     tile_grid = TileGrid(10, 10)
 
-    world.add_child(tile_grid)
+    world = World(
+        tile_grid=tile_grid,
+        resource_spawner=ResourceSpawner(tile_grid, 10),
+        worker_spawner=WorkerSpawner(tile_grid, 2),
+    )
 
-    #world.add_resource(resource)
-    #world.add_worker(worker)
-
-    # Worker looks around
-    # Worker decides to move in a direction
-
-    # Demand for a resource must exist. That demand can fluctuate.
-
-    # Add a player to the world.
-    # Add resources to the world which spawn at specific places.
-    # Add hirable agents to the world.
-
-    # World
-    # - TileGrid
-    #   - Tiles (linked N/S/E/W to each other)
-    #       - per Tile
-    #           - Workers (automoton)
-    #               get parent, expect it to be a Tile
-    #               gather information about surroundings
-    #               make a decision (based on probability)
-    #               take action
-    #           - Resources (finite)
-    # update
-    # render
+    world_tick = 1
 
     while True:
         # Let one second of wall time pass. At some point we can
@@ -335,3 +289,10 @@ if __name__ == "__main__":
         entities = gather_entities(world)
         for entity in entities:
             entity.update(world_tick)
+
+        print("=" * 70)
+
+        for row in world.tile_grid.grid:
+            for tile in row:
+                tile.render()
+            print("")
