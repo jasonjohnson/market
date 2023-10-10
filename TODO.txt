@@ -1,0 +1,23 @@
+DO (enhancements + bugs)
+===============================================================================
+- Render with pygame
+- Capture video with pygame
+- Fix: harvester movement back to base is boring
+- Fix: linting? low value at current LoC
+- Fix: type hinting? low value at current LoC
+
+
+DOING
+===============================================================================
+- Setup pygame
+
+
+DONE
+===============================================================================
+- Add Harvester with basic seek/collect/deposit behaviors
+- Add Spice
+- Add Base
+- Add test discovery
+- Add test runner
+- Add tests for Entity (concerned about sibling behavior)
+- Get basic simulation running 

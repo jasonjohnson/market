@@ -1,5 +1,4 @@
-
-import pprint
+"""Main"""
 import random
 import time
 
@@ -115,7 +114,7 @@ class SpiceSpawner(entity.Entity):
 
         spice = Spice()
 
-        tile = tile_grid.get_random_tile()
+        tile = self.tile_grid.get_random_tile()
         tile.add_child(spice)
 
         self.spices.append(spice)
@@ -134,9 +133,6 @@ class World(entity.Entity):
         pass
 
 class Spice(entity.Entity):
-    def __init__(self):
-        super().__init__()
-
     def __repr__(self):
         return "S"
 

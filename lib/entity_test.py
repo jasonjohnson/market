@@ -18,7 +18,7 @@ class EntityTest(unittest.TestCase):
 
         # "test" should remain a child of "root" even after we
         # asked for its siblings.
-        # 
+        #
         # Depending on the implementation of get_siblings, it is
         # possible mistakes could be made which unintentionally remove
         # "test" from children.

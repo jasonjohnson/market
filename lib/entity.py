@@ -14,19 +14,19 @@ class Entity(object):
     def add_child(self, child):
         child.parent = self
         self.children.append(child)
-    
+
     def add_sibling(self, sibling):
         if not self.parent:
             raise LookupError("Entity has no parent. Cannot add sibling.")
         self.parent.add_child(sibling)
-    
+
     def remove_child(self, child):
         child.parent = None
         self.children.remove(child)
 
     def get_children(self):
         return self.children
-    
+
     def get_siblings(self):
         if not self.parent:
             return []
