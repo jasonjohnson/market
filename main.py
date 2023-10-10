@@ -2,7 +2,15 @@
 import random
 import time
 
+import pygame
+
 from lib import entity
+
+WINDOW_CAPTION = "Market"
+
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+
 
 def tile_distance(tile_a, tile_b):
     return abs(tile_a.row - tile_b.row) + abs(tile_a.column - tile_b.column)
@@ -267,20 +275,29 @@ if __name__ == "__main__":
         spice_spawner=spice_spawner,
     )
 
-    world_tick = 1
+    pygame.init()
+    
+    clock = pygame.time.Clock()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    pygame.display.set_caption(WINDOW_CAPTION)
 
     while True:
-        # Let one second of wall time pass. At some point we can
-        # make this dymaic.
-        time.sleep(world_tick)
-
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
         # Gathering this each time seems expensive, but it is the
         # most obvious way I can think of to keep the entity list
         # fresh (in case some are added/removed at run-time).
         entities = gather_entities(world)
         for entity in entities:
-            entity.update(world_tick)
+            entity.update(clock.tick() / 1000.0)
 
+        screen.fill((255, 255, 255))
+
+        pygame.display.update()
+    
         print(" " * 70)
         print("Base[spice]: %d" % len(base.spices))
         print("Spice: %s" % str(spice_spawner.spices))

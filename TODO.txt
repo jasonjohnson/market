@@ -1,7 +1,7 @@
 DO (enhancements + bugs)
 ===============================================================================
-- Render with pygame
 - Capture video with pygame
+- Fix: everything runs too fast using pygame loop
 - Fix: harvester movement back to base is boring
 - Fix: linting? low value at current LoC
 - Fix: type hinting? low value at current LoC
@@ -9,11 +9,12 @@ DO (enhancements + bugs)
 
 DOING
 ===============================================================================
-- Setup pygame
+- Render with pygame
 
 
 DONE
 ===============================================================================
+- Setup pygame
 - Add Harvester with basic seek/collect/deposit behaviors
 - Add Spice
 - Add Base
