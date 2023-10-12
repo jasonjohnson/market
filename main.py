@@ -80,6 +80,9 @@ class TileGrid(entity.Entity):
                 if i != len(self.grid) - 1:
                     tile.south = self.grid[i + 1][j]
 
+    def inputs(self, events):
+        pass
+
     def update(self, delta):
         pass
 
@@ -88,6 +91,7 @@ class Tile(entity.Entity):
         super().__init__()
         self.row = row
         self.column = column
+        self.size = 50
         self.north = None
         self.south = None
         self.east = None
@@ -105,9 +109,18 @@ class Tile(entity.Entity):
     def update(self, delta):
         pass
 
-    def render(self):
-        content = "".join(map(str, self.get_children()))
-        print("[%s]" % content.rjust(5), end="")
+    def render(self, surface):
+        pygame.draw.rect(
+            surface,
+            (40, 40, 40),
+            (
+                self.row * self.size,
+                self.column * self.size,
+                self.size,
+                self.size,
+            ),
+            width=1
+        )
 
 class SpiceSpawner(entity.Entity):
     def __init__(self, tile_grid, max_spices):
@@ -147,6 +160,21 @@ class Spice(entity.Entity):
     def update(self, delta):
         pass
 
+    def render(self, surface):
+        if not hasattr(self.get_parent(), 'row'):
+            return
+
+        pygame.draw.rect(
+            surface,
+            (255, 0, 0),
+            (
+                self.get_parent().row * self.get_parent().size + 2,
+                self.get_parent().column * self.get_parent().size + 2,
+                5,
+                5,
+            )
+        )
+
 class Harvester(entity.Entity):
     """Harvesters:
         [x] Spawn from a Base
@@ -157,6 +185,8 @@ class Harvester(entity.Entity):
         super().__init__()
         self.base = base
         self.spice = None
+        self.interval = 1.0
+        self.interval_progress = 0.0
 
     def __repr__(self):
         if self.spice:
@@ -210,6 +240,10 @@ class Harvester(entity.Entity):
             distance_tile.add_child(self)
 
     def update(self, delta):
+        if self.interval_progress < self.interval:
+            self.interval_progress += delta
+            return
+
         tile = self.get_parent()
 
         if self.spice:
@@ -226,6 +260,20 @@ class Harvester(entity.Entity):
                 self.collect_spice(tile, spice)
             else:
                 self.find_spice(tile)
+
+        self.interval_progress = 0.0
+
+    def render(self, surface):
+        pygame.draw.rect(
+            surface,
+            (0, 255, 0),
+            (
+                self.get_parent().row * self.get_parent().size + 7,
+                self.get_parent().column * self.get_parent().size + 7,
+                5,
+                5,
+            )
+        )
 
 class Base(entity.Entity):
     """Base:
@@ -254,7 +302,7 @@ class Base(entity.Entity):
     def update(self, delta):
         if len(self.spices) >= self.harvester_construction_cost:
             del self.spices[:self.harvester_construction_cost]
-            
+
             harvester = Harvester(self)
 
             self.harvesters.append(harvester)
@@ -276,34 +324,38 @@ if __name__ == "__main__":
     )
 
     pygame.init()
-    
+
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     pygame.display.set_caption(WINDOW_CAPTION)
 
+    events = []
+
     while True:
+        delta = clock.tick() / 1000.0
+        events.clear()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        
+            else:
+                events.append(event)
+
+        surface.fill((255, 255, 255))
+
         # Gathering this each time seems expensive, but it is the
         # most obvious way I can think of to keep the entity list
         # fresh (in case some are added/removed at run-time).
         entities = gather_entities(world)
-        for entity in entities:
-            entity.update(clock.tick() / 1000.0)
 
-        screen.fill((255, 255, 255))
+        for e in entities:
+            e.inputs(events)
+
+        for e in entities:
+            e.update(delta)
+
+        for e in entities:
+            e.render(surface)
 
         pygame.display.update()
-    
-        print(" " * 70)
-        print("Base[spice]: %d" % len(base.spices))
-        print("Spice: %s" % str(spice_spawner.spices))
-        print(" " * 70)
-
-        for row in world.tile_grid.grid:
-            for tile in row:
-                tile.render()
-            print("")

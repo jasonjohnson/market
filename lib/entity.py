@@ -43,6 +43,12 @@ class Entity(object):
     def subscribe(self, signal, receiver):
         Entity.BUS[signal].append(receiver)
 
+    def inputs(self, events):
+        return
+
     def update(self, delta):
         """Called once every iteration of the game loop."""
-        pass
+        return
+
+    def render(self, surface):
+        return
