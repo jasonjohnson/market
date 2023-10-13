@@ -1,9 +1,8 @@
-DO (enhancements + bugs)
+DO
 ===============================================================================
+- Add build queue
 - Fix: harvester uses hasattr to determine if it is on a tile
 - Fix: entities don't have a position
-- Fix: main file is getting unweidly
-- Fix: entity is getting unweidly (use components?)
 - Fix: harvester movement back to base is boring
 - Fix: linting? low value at current LoC
 - Fix: type hinting? low value at current LoC
@@ -11,11 +10,13 @@ DO (enhancements + bugs)
 
 DOING
 ===============================================================================
-- Capture video with pygame
+- Add button for the player to build a harvester
 
 
 DONE
 ===============================================================================
+- Fix: main file is getting unweidly
+- Fix: entity is getting unweidly (use components?)
 - Fix: everything runs too fast using pygame loop
 - Add inputs, update, and render functions to all entities
 - Render with pygame
@@ -27,3 +28,8 @@ DONE
 - Add test runner
 - Add tests for Entity (concerned about sibling behavior)
 - Get basic simulation running 
+
+
+DUMP
+===============================================================================
+- Capture video with pygame (low value, can only capture image of surface)
