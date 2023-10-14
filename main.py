@@ -4,7 +4,7 @@ import time
 
 import pygame
 
-from lib import base, entity, spice, tile, world
+from lib import base, button, entity, spice, tile, world
 
 WINDOW_CAPTION = "Market"
 
@@ -25,6 +25,8 @@ if __name__ == "__main__":
         tile_grid=tile_grid,
         spice_spawner=spice_spawner,
     )
+
+    world.add_child(button.Button())
 
     pygame.init()
 

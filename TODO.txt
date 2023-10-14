@@ -1,6 +1,5 @@
 DO
 ===============================================================================
-- Add build queue
 - Fix: harvester uses hasattr to determine if it is on a tile
 - Fix: entities don't have a position
 - Fix: harvester movement back to base is boring
@@ -10,11 +9,12 @@ DO
 
 DOING
 ===============================================================================
-- Add button for the player to build a harvester
+- Add build queue
 
 
 DONE
 ===============================================================================
+- Add button for the player to build a harvester
 - Fix: main file is getting unweidly
 - Fix: entity is getting unweidly (use components?)
 - Fix: everything runs too fast using pygame loop
