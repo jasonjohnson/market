@@ -3,15 +3,21 @@ import pygame
 from . import entity
 
 class Button(entity.Entity):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, label, width=200, height=20):
+        super().__init__(left=10, top=10)
         self.hovering = False
-        self.color = (0, 0, 255)
-        self.x = 510
-        self.y = 0
-        self.width = 200
-        self.height = 20
-        self.rect = pygame.rect.Rect(self.x, self.y, self.width, self.height)
+        self.color_text = (255, 255, 255)
+        self.color_border = (0, 0, 255)
+        self.label = label
+        self.width = width
+        self.height = height
+        self.font = pygame.font.Font(None, 14)
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
 
     def inputs(self, events):
         for e in events:
@@ -26,13 +32,26 @@ class Button(entity.Entity):
                     self.on_mouse_up()
                     self.on_mouse_click()
 
+    def update(self, delta):
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
+
     def render(self, surface):
         pygame.draw.rect(
             surface,
-            self.color,
+            self.color_border,
             self.rect,
-            width=1
+            width=3
         )
+
+        text = self.font.render(
+            self.label, 1, self.color_text, self.color_border)
+
+        surface.blit(text, self.rect)
 
     def on_mouse_down(self):
         pass
@@ -44,4 +63,4 @@ class Button(entity.Entity):
         pass
 
     def on_mouse_click(self):
-        self.emit('spawn')
+        self.emit('spawn_request')

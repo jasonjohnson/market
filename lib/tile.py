@@ -5,11 +5,12 @@ import pygame
 from . import entity
 
 def tile_distance(tile_a, tile_b):
-    return abs(tile_a.row - tile_b.row) + abs(tile_a.column - tile_b.column)
+    return abs(tile_a.get_top() - tile_b.get_top()) + \
+        abs(tile_a.get_left() - tile_b.get_left())
 
 class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
-        super().__init__()
+        super().__init__(left=10, top=10)
         self.tiles = []
         self.grid = []
         self.generate(rows, columns)
@@ -72,14 +73,24 @@ class TileGrid(entity.Entity):
 
 class Tile(entity.Entity):
     def __init__(self, row, column):
-        super().__init__()
-        self.row = row
-        self.column = column
-        self.size = 50
+        self.width = 20
+        self.height = 20
+
+        super().__init__(left=(column * self.width), top=(row * self.height))
+
         self.north = None
         self.south = None
         self.east = None
         self.west = None
+        
+        # https://www.pygame.org/docs/ref/color_list.html
+        self.color = pygame.color.Color('azure3')
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
 
     def get_neighbor_tiles(self):
         return list(filter(None, [self.north, self.south, self.east, self.west]))
@@ -91,17 +102,17 @@ class Tile(entity.Entity):
         return None
 
     def update(self, delta):
-        pass
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
 
     def render(self, surface):
         pygame.draw.rect(
             surface,
-            (40, 40, 40),
-            (
-                self.row * self.size,
-                self.column * self.size,
-                self.size,
-                self.size,
-            ),
+            self.color,
+            self.rect,
             width=1
         )

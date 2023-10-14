@@ -11,14 +11,11 @@ def gather_entities(root_entity):
 class Entity(object):
     BUS = collections.defaultdict(list)
 
-    def __init__(self):
-        self.parent = None
+    def __init__(self, left, top):
         self.children = []
-        self.x = 0
-        self.y = 0
-        self.z = 0
-        self.width = 0
-        self.height = 0
+        self.parent = None
+        self.left = left
+        self.top = top
 
     def get_parent(self):
         return self.parent
@@ -53,6 +50,26 @@ class Entity(object):
         if not self.parent:
             raise LookupError("Entity has no parent. Cannot add sibling.")
         self.parent.add_child(sibling)
+
+    def set_position(self, left, top):
+        self.left = left
+        self.top = top
+
+    def get_left(self):
+        # The root has no parent, and will stop the recursion. Simply
+        # return the position of the root.
+        if not self.parent:
+            return self.left
+
+        return self.left + self.get_parent().get_left()
+
+    def get_top(self):
+        # The root has no parent, and will stop the recursion. Simply
+        # return the position of the root.
+        if not self.parent:
+            return self.top
+
+        return self.top + self.get_parent().get_top()
 
     def emit(self, signal, *args, **kwargs):
         for receiver in Entity.BUS[signal]:

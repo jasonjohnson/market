@@ -4,7 +4,7 @@ import time
 
 import pygame
 
-from lib import base, button, entity, spice, tile, world
+from lib import base, button, entity, label, panel, spice, tile, world
 
 WINDOW_CAPTION = "Market"
 
@@ -12,28 +12,72 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
 if __name__ == "__main__":
-    base = base.Base(
-        starting_spice=1
-    )
-
-    tile_grid = tile.TileGrid(10, 10)
-    tile_grid.get_tile(0, 0).add_child(base)
-
-    spice_spawner = spice.SpiceSpawner(tile_grid, 10)
-
-    world = world.World(
-        tile_grid=tile_grid,
-        spice_spawner=spice_spawner,
-    )
-
-    world.add_child(button.Button())
-
     pygame.init()
 
+    panel_spice_field = panel.Panel(
+        label="SPICE FIELD",
+        left=280,
+        top=0,
+        width=720,
+        height=720,
+    )
+
+    tile_grid = tile.TileGrid(35, 35)
+
+    # 10% of tiles have spice. No idea if this is a good value.
+    spice_spawner = spice.SpiceSpawner(tile_grid, int((35 * 35) * 0.1))
+
+    panel_spice_field.add_child(tile_grid)
+    panel_spice_field.add_child(spice_spawner)
+
+    panel_actions = panel.Panel(
+        label="ACTIONS",
+        left=1000,
+        top=0,
+        width=280,
+        height=720,
+    )
+
+    panel_actions.add_child(button.Button("SPAWN HARVESTER"))
+
+    panel_economy = panel.Panel(
+        label="ECONOMY",
+        left=0,
+        top=480,
+        width=280,
+        height=240,
+    )
+    panel_economy.add_child(label.Label("Harvesters: {harvesters} Spice: {spice}"))
+
+    world = world.World()
+    world.add_child(panel_spice_field)
+    world.add_child(panel_actions)
+    world.add_child(panel_economy)
+    world.add_child(panel.Panel(
+        label="SELECTION DETAILS",
+        left=0,
+        top=0,
+        width=280,
+        height=240,
+    ))
+    world.add_child(panel.Panel(
+        label="BUILD QUEUE",
+        left=0,
+        top=240,
+        width=280,
+        height=240,
+    ))
+
+    tile_grid.get_tile(0, 0).add_child(
+        base.Base(starting_spice=1)
+    )
+
     clock = pygame.time.Clock()
+
     surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     pygame.display.set_caption(WINDOW_CAPTION)
+    # pygame.display.set_icon(None) TODO set icon
 
     events = []
 

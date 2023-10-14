@@ -6,11 +6,20 @@ from . import base, entity, spice, tile
 
 class Harvester(entity.Entity):
     def __init__(self, base):
-        super().__init__()
+        super().__init__(left=2, top=2)
         self.base = base
         self.spice = None
         self.interval = 1.0
         self.interval_progress = 0.0
+        self.color = (0, 255, 0)
+        self.width = 5
+        self.height = 5
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
 
     def find_spice(self, tile):
         tiles = tile.get_neighbor_tiles()
@@ -58,6 +67,13 @@ class Harvester(entity.Entity):
             distance_tile.add_child(self)
 
     def update(self, delta):
+        self.rect = pygame.rect.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.width,
+            self.height,
+        )
+
         if self.interval_progress < self.interval:
             self.interval_progress += delta
             return
@@ -84,11 +100,6 @@ class Harvester(entity.Entity):
     def render(self, surface):
         pygame.draw.rect(
             surface,
-            (0, 255, 0),
-            (
-                self.get_parent().row * self.get_parent().size + 7,
-                self.get_parent().column * self.get_parent().size + 7,
-                5,
-                5,
-            )
+            self.color,
+            self.rect,
         )
