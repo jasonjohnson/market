@@ -11,7 +11,7 @@ DO
 - Fix: button mouse position on "up" doesn't need to be hovering
 - Fix: harvester movement back to base is boring
 - Fix: linting? low value at current LoC
-- Fix: type hinting? low value at current L`oC
+- Fix: type hinting? low value at current LoC
 
 
 DOING
