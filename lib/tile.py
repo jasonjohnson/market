@@ -1,8 +1,6 @@
 import random
 
-import pygame
-
-from . import entity
+from . import entity, sprite
 
 def tile_distance(tile_a, tile_b):
     return abs(tile_a.get_top() - tile_b.get_top()) + \
@@ -11,6 +9,7 @@ def tile_distance(tile_a, tile_b):
 class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
         super().__init__(left=10, top=10)
+
         self.tiles = []
         self.grid = []
         self.generate(rows, columns)
@@ -72,24 +71,16 @@ class TileGrid(entity.Entity):
         pass
 
 class Tile(entity.Entity):
+    SIZE = 20
+
     def __init__(self, row, column):
-        self.width = 20
-        self.height = 20
+        super().__init__(left=(column * Tile.SIZE), top=(row * Tile.SIZE))
 
-        super().__init__(left=(column * self.width), top=(row * self.height))
-
+        self.sprite = sprite.Sprite(Tile.SIZE, Tile.SIZE)
         self.north = None
         self.south = None
         self.east = None
         self.west = None
-
-        self.color = pygame.color.Color('azure3')
-        self.rect = pygame.rect.Rect(
-            self.get_left(),
-            self.get_top(),
-            self.width,
-            self.height,
-        )
 
     def get_neighbor_tiles(self):
         return list(filter(None, [self.north, self.south, self.east, self.west]))
@@ -100,21 +91,8 @@ class Tile(entity.Entity):
                 return child
         return None
 
-    def update(self, delta):
-        self.rect = pygame.rect.Rect(
-            self.get_left(),
-            self.get_top(),
-            self.width,
-            self.height,
-        )
-
     def render(self, surface):
-        pygame.draw.rect(
-            surface,
-            self.color,
-            self.rect,
-            width=1
-        )
+        surface.blit(self.sprite.get_surface(), self.get_position())
 
 class TileSlot(entity.Entity):
     # TODO limit # of things a single tile can hold. Let

@@ -18,6 +18,7 @@ class Automaton(entity.Entity):
 
     def __init__(self, action_interval=0.2):
         super().__init__()
+
         self.action_interval = action_interval
         self.action_interval_wait = 0.0
         self.running = False

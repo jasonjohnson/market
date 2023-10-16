@@ -11,16 +11,12 @@ def gather_entities(root_entity):
 class Entity(object):
     BUS = collections.defaultdict(list)
 
-    def __init__(self, left=0, top=0, padding=0, parent=None, children=None):
+    def __init__(self, left=0, top=0, padding=0, parent=None):
         self.parent = parent
         self.left = left
         self.top = top
         self.padding = padding
-
-        if children:
-            self.children = children
-        else:
-            self.children = []
+        self.children = []
 
     def get_parent(self):
         return self.parent

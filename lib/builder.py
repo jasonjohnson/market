@@ -1,12 +1,11 @@
 import random
 
-import pygame
-
 from . import automaton, base, sprite, tile
 
 class Builder(automaton.Automaton):
     def __init__(self, spawn_base):
         super().__init__()
+
         self.sprite = sprite.Sprite(5, 5)
         self.spawn_base = spawn_base
         self.wander_distance = 300
@@ -66,5 +65,5 @@ class Builder(automaton.Automaton):
 
         random.choice(tile_options).add_child(self)
 
-    def render(self, surface: pygame.Surface):
+    def render(self, surface):
         surface.blit(self.sprite.get_surface(), self.get_position())

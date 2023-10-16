@@ -21,3 +21,6 @@ class Sprite(object):
             )
 
         return self.surface
+
+    def get_global_rect(self, position):
+        return self.surface.get_rect().move(position)

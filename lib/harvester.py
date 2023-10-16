@@ -1,19 +1,16 @@
 import random
 
-import pygame
-
-from . import base, entity, spice, tile
+from . import base, entity, spice, sprite, tile
 
 class Harvester(entity.Entity):
-    def __init__(self, base):
+    def __init__(self, spawn_base):
         super().__init__(left=2, top=2)
-        self.base = base
+
+        self.sprite = sprite.Sprite(5, 5)
+        self.spawn_base = spawn_base
         self.spice = None
         self.interval = 0.2
         self.interval_progress = 0.0
-        self.color = (0, 255, 0)
-        self.width = 5
-        self.height = 5
 
     def find_spice(self, tile):
         tiles = tile.get_neighbor_tiles()
@@ -40,14 +37,14 @@ class Harvester(entity.Entity):
 
     def find_base(self, current_tile):
         distance = tile.tile_distance(current_tile,
-                                      self.base.get_tile())
+                                      self.spawn_base.get_tile())
         distance_tile = current_tile
 
         tiles = current_tile.get_neighbor_tiles()
         goals = []
 
         for t in tiles:
-            d = tile.tile_distance(t, self.base.get_tile())
+            d = tile.tile_distance(t, self.spawn_base.get_tile())
             if d < distance:
                 distance = d
                 distance_tile = t
@@ -86,13 +83,4 @@ class Harvester(entity.Entity):
         self.interval_progress = 0.0
 
     def render(self, surface):
-        pygame.draw.rect(
-            surface,
-            self.color,
-            pygame.rect.Rect(
-                self.get_left(),
-                self.get_top(),
-                self.width,
-                self.height,
-            ),
-        )
+        surface.blit(self.sprite.get_surface(), self.get_position())

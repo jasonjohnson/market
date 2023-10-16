@@ -15,10 +15,9 @@ if __name__ == "__main__":
     pygame.init()
 
     panel_spice_field = panel.Panel(
-        label="SPICE FIELD",
+        text="SPICE FIELD",
         left=280,
         top=0,
-        padding=10,
         width=720,
         height=720,
     )
@@ -32,10 +31,9 @@ if __name__ == "__main__":
     panel_spice_field.add_child(spice_spawner)
 
     panel_actions = panel.Panel(
-        label="ACTIONS",
+        text="ACTIONS",
         left=1000,
         top=0,
-        padding=10,
         width=280,
         height=720,
     )
@@ -43,10 +41,9 @@ if __name__ == "__main__":
     panel_actions.add_child(button.Button("SPAWN HARVESTER"))
 
     panel_economy = panel.Panel(
-        label="ECONOMY",
+        text="ECONOMY",
         left=0,
         top=480,
-        padding=10,
         width=280,
         height=240,
     )
@@ -57,18 +54,16 @@ if __name__ == "__main__":
     world.add_child(panel_actions)
     world.add_child(panel_economy)
     world.add_child(panel.Panel(
-        label="SELECTION DETAILS",
+        text="SELECTION DETAILS",
         left=0,
         top=0,
-        padding=10,
         width=280,
         height=240,
     ))
     world.add_child(panel.Panel(
-        label="BUILD QUEUE",
+        text="BUILD QUEUE",
         left=0,
         top=240,
-        padding=10,
         width=280,
         height=240,
     ))
