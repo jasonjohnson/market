@@ -11,36 +11,60 @@ class Builder(automaton.Automaton):
         self.spawn_base = spawn_base
         self.wander_distance = 300
 
-    def distance_from_base(self, t: tile.Tile):
-        return tile.tile_distance(t, self.spawn_base.get_tile())
+        self.has_built = False
 
-    def find_build_location(self, current_tile: tile.Tile, current_distance):
-        tiles = current_tile.get_neighbor_tiles()
-        goals = []
+        self.add_state('moving', initial=True)
+        self.add_state('building', on_enter=self.build)
+        self.add_state('destroying', on_enter=self.destroy)
 
-        for t in tiles:
-            if self.distance_from_base(t) > current_distance:
-                goals.append(t)
+        self.add_transition(
+            state_a='moving',
+            state_b='building',
+            test=self.can_build,
+            on_failure=self.move
+        )
 
-        current_tile.remove_child(self)
+        self.add_transition(
+            state_a='building',
+            state_b='destroying',
+            test=self.can_destroy
+        )
 
-        random.choice(goals).add_child(self)
+    def get_tile(self):
+        return self.get_parent()
 
-    def build_base(self, current_tile: tile.Tile):
-        current_tile.add_child(base.Base(starting_spice=1))
+    def distance_from_base(self, tile_a=None):
+        if not tile_a:
+            tile_a = self.get_tile()
 
-    def self_destruct(self):
+        return tile.tile_distance(tile_a, self.spawn_base.get_tile())
+
+    def can_build(self):
+        return self.distance_from_base() > self.wander_distance
+
+    def can_destroy(self):
+        if not self.has_built:
+            return False
+        return True
+
+    def build(self):
+        self.get_tile().add_child(base.Base(starting_spice=1))
+        self.has_built = True
+
+    def destroy(self):
         self.get_parent().remove_child(self)
 
-    def act(self):
-        current_tile = self.get_parent()
-        current_distance = self.distance_from_base(current_tile)
+    def move(self):
+        tiles = self.get_tile().get_neighbor_tiles()
+        tile_options = []
 
-        if current_distance < self.wander_distance:
-            self.find_build_location(current_tile, current_distance)
-        else:
-            self.build_base(current_tile)
-            self.self_destruct()
+        for t in tiles:
+            if self.distance_from_base(t) > self.distance_from_base():
+                tile_options.append(t)
+
+        self.get_tile().remove_child(self)
+
+        random.choice(tile_options).add_child(self)
 
     def render(self, surface: pygame.Surface):
         surface.blit(self.sprite.get_surface(), self.get_position())

@@ -11,7 +11,6 @@ DO
 - Add tile or base selection (to spawn from specific base)
 - Fix: padding isn't working correctly
 - Fix: limit tile capacity to create bottlenecks
-- Fix: use the Sprite class everywhere
 - Fix: spawning a harvester spawns one from every base
 - Fix: buttons and labels aren't specialized
 - Fix: lots of duplication of rect and rendering code in entities
@@ -24,11 +23,13 @@ DO
 
 DOING
 ===============================================================================
-- Add "tests" (simple FSM infrastructure) to the base Automaton class
+- Fix: use the Sprite class everywhere
 
 
 DONE
 ===============================================================================
+- Fix: rewrite Builder to use FSM infrastructure
+- Add "tests" (simple FSM infrastructure) to the base Automaton class
 - Add Builder automaton
 - Add Sprite class
 - Add TileSlot placeholder (need to limit tile capacity to create bottlenecks)
