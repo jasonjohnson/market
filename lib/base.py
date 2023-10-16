@@ -8,12 +8,6 @@ class Base(entity.Entity):
         self.width = 10
         self.height = 10
         self.color = (0, 0, 0)
-        self.rect = pygame.rect.Rect(
-            self.get_left(),
-            self.get_top(),
-            self.width,
-            self.height,
-        )
 
         self.subscribe('spawn_request', self.handle_spawn_request)
 
@@ -45,17 +39,14 @@ class Base(entity.Entity):
 
         del self.spices[:self.harvester_construction_cost]
 
-    def update(self, delta):
-        self.rect = pygame.rect.Rect(
-            self.get_left(),
-            self.get_top(),
-            self.width,
-            self.height,
-        )
-
     def render(self, surface):
         pygame.draw.rect(
             surface,
             self.color,
-            self.rect,
+            pygame.rect.Rect(
+                self.get_left(),
+                self.get_top(),
+                self.width,
+                self.height,
+            ),
         )

@@ -82,8 +82,7 @@ class Tile(entity.Entity):
         self.south = None
         self.east = None
         self.west = None
-        
-        # https://www.pygame.org/docs/ref/color_list.html
+
         self.color = pygame.color.Color('azure3')
         self.rect = pygame.rect.Rect(
             self.get_left(),
@@ -116,3 +115,9 @@ class Tile(entity.Entity):
             self.rect,
             width=1
         )
+
+class TileSlot(entity.Entity):
+    # TODO limit # of things a single tile can hold. Let
+    #   a harvester, builder, etc. wait for a tile "slot" to
+    #   open for them to move to that tile.
+    pass

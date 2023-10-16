@@ -1,11 +1,19 @@
 DO
 ===============================================================================
+- Add build queue
 - Add a background graphic
 - Add base tile graphic (or a few)
 - Add harvester graphic
 - Add spice graphic
 - Add harvester spawn button graphics (normal, hover, down)
 - Add harvester spawn sfx
+- Add "spawn Builder" button
+- Add tile or base selection (to spawn from specific base)
+- Fix: padding isn't working correctly
+- Fix: limit tile capacity to create bottlenecks
+- Fix: use the Sprite class everywhere
+- Fix: spawning a harvester spawns one from every base
+- Fix: buttons and labels aren't specialized
 - Fix: lots of duplication of rect and rendering code in entities
 - Fix: window icon
 - Fix: button mouse position on "up" doesn't need to be hovering
@@ -16,11 +24,16 @@ DO
 
 DOING
 ===============================================================================
-- Add build queue
+- Add "tests" (simple FSM infrastructure) to the base Automaton class
 
 
 DONE
 ===============================================================================
+- Add Builder automaton
+- Add Sprite class
+- Add TileSlot placeholder (need to limit tile capacity to create bottlenecks)
+- Add Automaton base class, specializing Entity
+- Fix: Speed up all automaton actions (1s -> 200ms)
 - Fix: entities don't have a position
 - Fix: harvester uses hasattr to determine if it is on a tile
 - Fix: button doesn't use x, y, z and width, height correctly

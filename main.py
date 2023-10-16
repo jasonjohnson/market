@@ -4,7 +4,7 @@ import time
 
 import pygame
 
-from lib import base, button, entity, label, panel, spice, tile, world
+from lib import base, button, builder, entity, label, panel, spice, tile, world
 
 WINDOW_CAPTION = "Market"
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
         label="SPICE FIELD",
         left=280,
         top=0,
+        padding=10,
         width=720,
         height=720,
     )
@@ -34,6 +35,7 @@ if __name__ == "__main__":
         label="ACTIONS",
         left=1000,
         top=0,
+        padding=10,
         width=280,
         height=720,
     )
@@ -44,6 +46,7 @@ if __name__ == "__main__":
         label="ECONOMY",
         left=0,
         top=480,
+        padding=10,
         width=280,
         height=240,
     )
@@ -57,6 +60,7 @@ if __name__ == "__main__":
         label="SELECTION DETAILS",
         left=0,
         top=0,
+        padding=10,
         width=280,
         height=240,
     ))
@@ -64,13 +68,15 @@ if __name__ == "__main__":
         label="BUILD QUEUE",
         left=0,
         top=240,
+        padding=10,
         width=280,
         height=240,
     ))
 
-    tile_grid.get_tile(0, 0).add_child(
-        base.Base(starting_spice=1)
-    )
+    b = base.Base(starting_spice=1)
+
+    tile_grid.get_tile(0, 0).add_child(b)
+    tile_grid.get_tile(0, 0).add_child(builder.Builder(b))
 
     clock = pygame.time.Clock()
 
