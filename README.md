@@ -29,7 +29,7 @@ The spice must flow.
 
 * [main.py](main.py): game entry point
 * [lib/automaton.py](lib/automaton.py): finite state machine class
-  * [lib/builder.py](lib/automaton.py): Builder unit
+  * [lib/builder.py](lib/builder.py): Builder unit
   * [lib/harvester.py](lib/harvester.py): Harvester unit
 * [lib/entity.py](lib/entity.py): entity class, basis of the scene graph
 * [lib/sprite.py](lib/sprite.py): sprite class
