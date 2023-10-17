@@ -8,8 +8,8 @@ class Builder(automaton.Automaton):
 
         self.sprite = sprite.Sprite(5, 5)
         self.spawn_base = spawn_base
-        self.wander_distance = 300
 
+        self.wander_distance = 300
         self.has_built = False
 
         self.add_state('moving', initial=True)
@@ -20,13 +20,13 @@ class Builder(automaton.Automaton):
             state_a='moving',
             state_b='building',
             test=self.can_build,
-            on_failure=self.move
+            on_failure=self.move_toward_build_site,
         )
 
         self.add_transition(
             state_a='building',
             state_b='destroying',
-            test=self.can_destroy
+            test=self.can_destroy,
         )
 
     def get_tile(self):
@@ -38,22 +38,15 @@ class Builder(automaton.Automaton):
 
         return tile.tile_distance(tile_a, self.spawn_base.get_tile())
 
-    def can_build(self):
+    def can_build(self) -> bool:
         return self.distance_from_base() > self.wander_distance
 
-    def can_destroy(self):
+    def can_destroy(self) -> bool:
         if not self.has_built:
             return False
         return True
 
-    def build(self):
-        self.get_tile().add_child(base.Base(starting_spice=1))
-        self.has_built = True
-
-    def destroy(self):
-        self.get_parent().remove_child(self)
-
-    def move(self):
+    def move_toward_build_site(self):
         tiles = self.get_tile().get_neighbor_tiles()
         tile_options = []
 
@@ -64,6 +57,13 @@ class Builder(automaton.Automaton):
         self.get_tile().remove_child(self)
 
         random.choice(tile_options).add_child(self)
+
+    def build(self):
+        self.get_tile().add_child(base.Base(starting_spice=1))
+        self.has_built = True
+
+    def destroy(self):
+        self.get_parent().remove_child(self)
 
     def render(self, surface):
         surface.blit(self.sprite.get_surface(), self.get_position())

@@ -1,8 +1,19 @@
 ## Market: a simulation game of unknown scope.
 
-#### Idea
+#### Theme
 
 The spice must flow.
+
+#### Winning
+
+* Meet the demand of the spice market for 1 full year.
+
+#### Ideas
+
+* Harvest, transport, and protect enough spice to the market to meet demand
+* Construction cost (time and spice)
+* Upkeep cost (spice)
+* Simple automatons (ex: harvester, builder, courier, etc.)
 
 #### Gameplay
 
@@ -11,7 +22,7 @@ The spice must flow.
 #### Pointers
 
 * [main.py](main.py): game entry point
-* [test.py](test.py): test entry point
-* [lib/entity.py](lib/entity.py): entity class which creates the scene graph
-* [lib/entity_test.py](lib/entity_test.py): entity class tests
+* [lib/automaton.py](lib/automaton.py): finite state machine class
+* [lib/entity.py](lib/entity.py): entity class, basis of the scene graph
+* [lib/sprite.py](lib/sprite.py): sprite class
 * [TODO.txt](TODO.txt): do, doing, done and dumped

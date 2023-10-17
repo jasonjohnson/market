@@ -1,86 +1,115 @@
 import random
 
-from . import base, entity, spice, sprite, tile
+from . import automaton, base, entity, spice, sprite, tile
 
-class Harvester(entity.Entity):
+class Harvester(automaton.Automaton):
     def __init__(self, spawn_base):
-        super().__init__(left=2, top=2)
+        super().__init__()
 
         self.sprite = sprite.Sprite(5, 5)
         self.spawn_base = spawn_base
-        self.spice = None
-        self.interval = 0.2
-        self.interval_progress = 0.0
 
-    def find_spice(self, tile):
-        tiles = tile.get_neighbor_tiles()
-        goals = []
+        self.spice = None
+
+        self.add_state('finding', initial=True)
+        self.add_state('gathering', on_enter=self.gather)
+        self.add_state('delivering')
+        self.add_state('depositing', on_enter=self.deposit)
+
+        self.add_transition(
+            state_a='finding',
+            state_b='gathering',
+            test=self.can_gather,
+            on_failure=self.move_toward_spice,
+        )
+
+        self.add_transition(
+            state_a='gathering',
+            state_b='delivering',
+            test=self.can_deliver,
+        )
+
+        self.add_transition(
+            state_a='delivering',
+            state_b='depositing',
+            test=self.can_deposit,
+            on_failure=self.move_toward_base,
+        )
+
+        self.add_transition(
+            state_a='depositing',
+            state_b='finding',
+            test=self.can_repeat,
+        )
+
+    def get_tile(self) -> tile.Tile:
+        return self.get_parent()
+
+    def get_base_tile(self) -> tile.Tile:
+        return self.spawn_base.get_tile()
+
+    def can_gather(self) -> bool:
+        return self.get_tile().get_child_of_kind(spice.Spice) is not None
+
+    def can_deliver(self) -> bool:
+        return self.spice is not None
+
+    def can_deposit(self) -> bool:
+        return self.get_tile().get_child_of_kind(base.Base) is not None
+
+    def can_repeat(self) -> bool:
+        return True
+
+    def move_toward_spice(self) -> None:
+        tiles = self.get_tile().get_neighbor_tiles()
+        tiles_objective = []
 
         for t in tiles:
             if t.get_child_of_kind(spice.Spice):
-                goals.append(t)
+                tiles_objective.append(t)
 
-        tile.remove_child(self)
+        self.get_tile().remove_child(self)
 
-        if len(goals) > 0:
-            random.choice(goals).add_child(self)
+        if len(tiles_objective) > 0:
+            random.choice(tiles_objective).add_child(self)
         else:
             random.choice(tiles).add_child(self)
 
-    def collect_spice(self, tile, spice):
-        tile.remove_child(spice)
-        self.spice = spice
+    def move_toward_base(self) -> None:
+        current = self.get_tile()
+        current_distance = tile.tile_distance(current, self.get_base_tile())
 
-    def deposit_spice(self, tile, base):
-        base.deposit_spice(self.spice)
-        self.spice = None
-
-    def find_base(self, current_tile):
-        distance = tile.tile_distance(current_tile,
-                                      self.spawn_base.get_tile())
-        distance_tile = current_tile
-
-        tiles = current_tile.get_neighbor_tiles()
-        goals = []
+        tiles = current.get_neighbor_tiles()
+        tiles_objective = []
+        tiles_closer = []
 
         for t in tiles:
-            d = tile.tile_distance(t, self.spawn_base.get_tile())
-            if d < distance:
-                distance = d
-                distance_tile = t
+            d = tile.tile_distance(t, self.get_base_tile())
+
+            if d < current_distance:
+                tiles_closer.append(t)
+
             if t.get_child_of_kind(base.Base):
-                goals.append(t)
+                tiles_objective.append(t)
 
-        current_tile.remove_child(self)
+        self.get_tile().remove_child(self)
 
-        if len(goals) > 0:
-            random.choice(goals).add_child(self)
+        if len(tiles_objective) > 0:
+            random.choice(tiles_objective).add_child(self)
         else:
-            distance_tile.add_child(self)
+            random.choice(tiles_closer).add_child(self)
 
-    def update(self, delta):
-        if self.interval_progress < self.interval:
-            self.interval_progress += delta
-            return
+    def gather(self) -> None:
+        found_spice = self.get_tile().get_child_of_kind(spice.Spice)
 
-        tile = self.get_parent()
+        self.get_tile().remove_child(found_spice)
+        self.spice = found_spice
 
-        if self.spice:
-            b = tile.get_child_of_kind(base.Base)
+    def deposit(self) -> None:
+        found_base = self.get_tile().get_child_of_kind(base.Base)
+        found_base.deposit_spice(self.spice)
 
-            if b:
-                self.deposit_spice(tile, b)
-            else:
-                self.find_base(tile)
-        else:
-            s = tile.get_child_of_kind(spice.Spice)
-
-            if s:
-                self.collect_spice(tile, s)
-            else:
-                self.find_spice(tile)
-
-        self.interval_progress = 0.0
+        self.spice = None
 
     def render(self, surface):
         surface.blit(self.sprite.get_surface(), self.get_position())
