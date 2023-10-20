@@ -18,13 +18,13 @@ class SpiceSpawner(entity.Entity):
         self.max_spices = max_spices
         self.spices = []
 
-    def update(self, delta):
+    def update(self, _delta):
         if len(self.spices) == self.max_spices:
             return
 
         spice = Spice()
 
-        tile = self.tile_grid.get_random_tile()
-        tile.add_child(spice)
+        random_tile = self.tile_grid.get_random_tile()
+        random_tile.add_child(spice)
 
         self.spices.append(spice)

@@ -1,6 +1,6 @@
 import random
 
-from . import automaton, base, entity, spice, sprite, tile
+from . import automaton, base, spice, sprite, tile
 
 class Harvester(automaton.Automaton):
     def __init__(self, spawn_base):

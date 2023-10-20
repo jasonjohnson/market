@@ -11,7 +11,7 @@ class EntityTest(unittest.TestCase):
         test = A(left=0, top=0)
 
         root.add_child(A(left=0, top=0))
-        root.add_child(test) 
+        root.add_child(test)
 
         # "test" should not return as a sibling of itself
         self.assertNotIn(test, test.get_siblings())
@@ -23,7 +23,7 @@ class EntityTest(unittest.TestCase):
         # possible mistakes could be made which unintentionally remove
         # "test" from children.
         self.assertIn(test, root.get_children())
-    
+
     def test_global_position(self):
         class A(entity.Entity):
             pass

@@ -9,7 +9,7 @@ class Base(entity.Entity):
         self.harvester_construction_cost = 1
         self.spices = []
 
-        for s in range(starting_spice):
+        for _ in range(starting_spice):
             self.deposit_spice(spice.Spice())
 
         self.subscribe('spawn_request', self.handle_spawn_request)
@@ -17,8 +17,8 @@ class Base(entity.Entity):
     def get_tile(self):
         return self.get_parent()
 
-    def deposit_spice(self, spice):
-        self.spices.append(spice)
+    def deposit_spice(self, new_spice):
+        self.spices.append(new_spice)
         self.emit('deposit')
 
     def handle_spawn_request(self):
@@ -26,10 +26,10 @@ class Base(entity.Entity):
             print("Not enough spices to build a harvester")
             return
 
-        h = harvester.Harvester(self)
+        new_harvester = harvester.Harvester(self)
 
-        self.harvesters.append(h)
-        self.add_sibling(h)
+        self.harvesters.append(new_harvester)
+        self.add_sibling(new_harvester)
 
         self.emit('spawn')
 

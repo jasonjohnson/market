@@ -8,7 +8,7 @@ def gather_entities(root_entity):
 
     return entities
 
-class Entity(object):
+class Entity:
     BUS = collections.defaultdict(list)
 
     def __init__(self, left=0, top=0, padding=0, parent=None):
@@ -82,11 +82,11 @@ class Entity(object):
     def subscribe(self, signal, receiver):
         Entity.BUS[signal].append(receiver)
 
-    def inputs(self, events):
+    def inputs(self, _events):
         return
 
-    def update(self, delta):
+    def update(self, _delta):
         return
 
-    def render(self, surface):
+    def render(self, _surface):
         return

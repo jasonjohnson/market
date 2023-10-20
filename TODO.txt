@@ -14,7 +14,8 @@ DO
 - Fix: spawning a harvester spawns one from every base
 - Fix: buttons and labels aren't specialized
 - Fix: window icon
-- Fix: linting? low value at current LoC
+- Fix: Cyclic import (lib.base -> lib.harvester)
+- Fix: Duplicate code (lib.button & lib.label)
 - Fix: type hinting? low value at current LoC
 
 
@@ -25,6 +26,7 @@ DOING
 
 DONE
 ===============================================================================
+- Fix: linting
 - Fix: lots of duplication of rect and rendering code in entities
 - Fix: button mouse position on "up" doesn't need to be hovering
 - Fix: harvester movement back to base is boring

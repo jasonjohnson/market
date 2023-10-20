@@ -1,10 +1,8 @@
 """Main"""
-import random
-import time
 
 import pygame
 
-from lib import base, button, builder, entity, label, panel, spice, tile, scene
+from lib import entity, scene
 
 WINDOW_CAPTION = "Market"
 

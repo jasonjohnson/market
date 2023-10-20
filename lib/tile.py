@@ -17,10 +17,10 @@ class TileGrid(entity.Entity):
 
         for tile in self.tiles:
             self.add_child(tile)
-    
+
     def get_tile(self, row, column):
         return self.grid[row][column]
-    
+
     def get_random_tile(self):
         return random.choice(self.tiles)
 
@@ -64,17 +64,11 @@ class TileGrid(entity.Entity):
                 if i != len(self.grid) - 1:
                     tile.south = self.grid[i + 1][j]
 
-    def inputs(self, events):
-        pass
-
-    def update(self, delta):
-        pass
-
 class Tile(entity.Entity):
     SIZE = 20
 
     def __init__(self, row, column):
-        super().__init__(left=(column * Tile.SIZE), top=(row * Tile.SIZE))
+        super().__init__(left=column * Tile.SIZE, top=row * Tile.SIZE)
 
         self.sprite = sprite.Sprite(Tile.SIZE, Tile.SIZE)
         self.north = None
@@ -95,7 +89,4 @@ class Tile(entity.Entity):
         surface.blit(self.sprite.get_surface(), self.get_position())
 
 class TileSlot(entity.Entity):
-    # TODO limit # of things a single tile can hold. Let
-    #   a harvester, builder, etc. wait for a tile "slot" to
-    #   open for them to move to that tile.
     pass
