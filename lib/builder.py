@@ -2,6 +2,7 @@ import random
 
 from . import automaton, base, sprite, tile
 
+
 class Builder(automaton.Automaton):
     def __init__(self, spawn_base):
         super().__init__()

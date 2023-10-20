@@ -1,5 +1,6 @@
 import collections
 
+
 def gather_entities(root_entity):
     entities = [root_entity]
 
@@ -7,6 +8,7 @@ def gather_entities(root_entity):
         entities.extend(entity.get_children())
 
     return entities
+
 
 class Entity:
     BUS = collections.defaultdict(list)
@@ -43,7 +45,7 @@ class Entity:
             return []
 
         # Filter "self" from the parent's children. This does not create
-        # a new list or modify the underlying list. It simly returns an
+        # a new list or modify the underlying list. It simply returns an
         # iterator which filters out "self" (or that what it should do!)
         return filter(lambda c: c != self, self.parent.get_children())
 
@@ -73,7 +75,7 @@ class Entity:
         return self.top + self.get_parent().get_top()
 
     def get_position(self):
-        return (self.get_left(), self.get_top())
+        return self.get_left(), self.get_top()
 
     def emit(self, signal, *args, **kwargs):
         for receiver in Entity.BUS[signal]:

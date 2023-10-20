@@ -2,6 +2,7 @@ import collections
 
 from . import entity
 
+
 class Automaton(entity.Entity):
     State = collections.namedtuple('State', [
         'on_enter',

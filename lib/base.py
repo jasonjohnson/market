@@ -1,5 +1,6 @@
 from . import entity, harvester, spice, sprite
 
+
 class Base(entity.Entity):
     def __init__(self, starting_spice):
         super().__init__(left=5, top=5)

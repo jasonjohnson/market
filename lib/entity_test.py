@@ -2,6 +2,7 @@ import unittest
 
 from . import entity
 
+
 class EntityTest(unittest.TestCase):
     def test_get_siblings(self):
         class A(entity.Entity):

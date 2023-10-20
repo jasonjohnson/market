@@ -2,9 +2,11 @@ import pygame
 
 from . import entity, sprite
 
+
 class Panel(entity.Entity):
     def __init__(self, text, left, top, width, height):
         super().__init__(left=left, top=top)
+
         self.sprite = sprite.Sprite(width, height)
         self.color = pygame.Color('magenta')
         self.font = pygame.font.Font(None, 14)

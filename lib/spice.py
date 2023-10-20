@@ -1,5 +1,6 @@
 from . import entity, sprite, tile
 
+
 class Spice(entity.Entity):
     def __init__(self):
         super().__init__(left=2, top=2)
@@ -10,6 +11,7 @@ class Spice(entity.Entity):
             return
 
         surface.blit(self.sprite.get_surface(), self.get_position())
+
 
 class SpiceSpawner(entity.Entity):
     def __init__(self, tile_grid, max_spices):

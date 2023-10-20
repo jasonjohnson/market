@@ -1,5 +1,6 @@
 from . import base, button, builder, entity, label, panel, spice, tile
 
+
 class Main(entity.Entity):
     def __init__(self):
         super().__init__()

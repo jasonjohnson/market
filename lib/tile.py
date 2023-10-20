@@ -2,9 +2,11 @@ import random
 
 from . import entity, sprite
 
+
 def tile_distance(tile_a, tile_b):
     return abs(tile_a.get_top() - tile_b.get_top()) + \
         abs(tile_a.get_left() - tile_b.get_left())
+
 
 class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
@@ -64,6 +66,7 @@ class TileGrid(entity.Entity):
                 if i != len(self.grid) - 1:
                     tile.south = self.grid[i + 1][j]
 
+
 class Tile(entity.Entity):
     SIZE = 20
 
@@ -87,6 +90,7 @@ class Tile(entity.Entity):
 
     def render(self, surface):
         surface.blit(self.sprite.get_surface(), self.get_position())
+
 
 class TileSlot(entity.Entity):
     pass

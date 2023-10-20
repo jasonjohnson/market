@@ -2,6 +2,7 @@ import pygame
 
 from . import entity, sprite
 
+
 class Button(entity.Entity):
     def __init__(self, text, width=200, height=20):
         super().__init__(left=10, top=10)
