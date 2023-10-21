@@ -1,5 +1,4 @@
-DO
-===============================================================================
+### DO
 - Add build queue
 - Add a background graphic
 - Add base tile graphic (or a few)
@@ -8,24 +7,24 @@ DO
 - Add harvester spawn button graphics (normal, hover, down)
 - Add harvester spawn sfx
 - Add "spawn Builder" button
+- Add a game start scene
+- Add a game end scene
+- Fix: tile selection sprite rendering is broken
 - Fix: harvesters are a little too dumb (give them short-term memory?)
 - Fix: padding isn't working correctly
 - Fix: limit tile capacity to create bottlenecks
-- Fix: spawning a harvester spawns one from every base
 - Fix: buttons and labels aren't specialized
 - Fix: window icon
 - Fix: Cyclic import (lib.base -> lib.harvester)
 - Fix: Duplicate code (lib.button & lib.label)
-- Fix: type hinting? low value at current LoC
 
 
-DOING
-===============================================================================
-- Add tile or base selection (to spawn from specific base)
+### DOING
+- Fix: spawning a harvester spawns one from every base
 
 
-DONE
-===============================================================================
+### DONE
+- Add tile selection
 - Fix: linting
 - Fix: lots of duplication of rect and rendering code in entities
 - Fix: button mouse position on "up" doesn't need to be hovering
@@ -62,6 +61,6 @@ DONE
 - Get basic simulation running 
 
 
-DUMP
-===============================================================================
+### DUMP
 - Capture video with pygame (low value, can only capture image of surface)
+- Fix: type hinting. Will use it only when it makes sense

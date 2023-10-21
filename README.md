@@ -10,6 +10,8 @@ The spice must flow.
 
 #### Ideas
 
+* With the context something has, it almost always makes the right decisions
+* Constraints create interesting problems
 * Harvest, transport, and protect enough spice to the market to meet demand
 * Construction cost (time and spice)
 * Upkeep cost (spice)
@@ -21,9 +23,12 @@ The spice must flow.
 * **Builder**: wander away from its spawn base, build a new base, and self-destruct
 * **Harvester**: wander around, gather spice, deposit spice at spawn base
 
-#### Gameplay
+#### Current Gameplay
 
-![Market Gameplay as of October 2023](doc/screenshots/2023_10_14-progress.gif)
+![Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
+
+Previously
+* [Gameplay as of October 14, 2023](doc/screenshots/2023_10_14-progress.gif)
 
 #### Pointers
 
@@ -33,4 +38,4 @@ The spice must flow.
   * [lib/harvester.py](lib/harvester.py): Harvester unit
 * [lib/entity.py](lib/entity.py): entity class, basis of the scene graph
 * [lib/sprite.py](lib/sprite.py): sprite class
-* [TODO.txt](TODO.txt): do, doing, done and dumped
+* [TODO.txt](TODO.md): do, doing, done and dumped

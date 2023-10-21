@@ -1,5 +1,7 @@
 import random
 
+import pygame
+
 from . import entity, sprite
 
 
@@ -12,6 +14,8 @@ class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
         super().__init__(left=10, top=10)
 
+        self.sprite = sprite.Sprite(rows * Tile.SIZE, columns * Tile.SIZE)
+        self.selected = None
         self.tiles = []
         self.grid = []
         self.generate(rows, columns)
@@ -66,6 +70,37 @@ class TileGrid(entity.Entity):
                 if i != len(self.grid) - 1:
                     tile.south = self.grid[i + 1][j]
 
+    def is_hovering(self, position):
+        return self.sprite.get_global_rect(
+            self.get_position()).collidepoint(position)
+
+    def inputs(self, events):
+        for e in events:
+            if e.type == pygame.MOUSEBUTTONUP:
+                if self.is_hovering(e.pos) and e.button == 1:
+                    left, top = e.pos
+                    self.on_mouse_click(left, top)
+
+    def render(self, surface):
+        surface.blit(self.sprite.get_surface(), self.get_position())
+
+    def on_mouse_click(self, global_left, global_top):
+        offset_left, offset_top = self.get_position()
+
+        local_left = global_left - offset_left
+        local_top = global_top - offset_top
+
+        row = int(local_top / Tile.SIZE)
+        column = int(local_left / Tile.SIZE)
+
+        if self.selected:
+            self.selected.deselect()
+
+        self.selected = self.grid[row][column]
+        self.selected.select()
+
+        self.emit('change_selection', self.selected)
+
 
 class Tile(entity.Entity):
     SIZE = 20
@@ -74,6 +109,9 @@ class Tile(entity.Entity):
         super().__init__(left=column * Tile.SIZE, top=row * Tile.SIZE)
 
         self.sprite = sprite.Sprite(Tile.SIZE, Tile.SIZE)
+        self.selected = False
+        self.row = row
+        self.column = column
         self.north = None
         self.south = None
         self.east = None
@@ -89,7 +127,14 @@ class Tile(entity.Entity):
         return None
 
     def render(self, surface):
-        surface.blit(self.sprite.get_surface(), self.get_position())
+        # TODO debug sprites are inherently cached. Won't change when debug changes.
+        surface.blit(self.sprite.get_surface(debug=self.selected), self.get_position())
+
+    def select(self):
+        self.selected = True
+
+    def deselect(self):
+        self.selected = False
 
 
 class TileSlot(entity.Entity):
