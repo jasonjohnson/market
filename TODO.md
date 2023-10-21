@@ -9,10 +9,8 @@
 - Add "spawn Builder" button
 - Add a game start scene
 - Add a game end scene
-- Fix: tile selection sprite rendering is broken
 - Fix: harvesters are a little too dumb (give them short-term memory?)
 - Fix: padding isn't working correctly
-- Fix: limit tile capacity to create bottlenecks
 - Fix: buttons and labels aren't specialized
 - Fix: window icon
 - Fix: Cyclic import (lib.base -> lib.harvester)
@@ -20,10 +18,12 @@
 
 
 ### DOING
-- Fix: spawning a harvester spawns one from every base
+- Fix: limit tile capacity to create bottlenecks
 
 
 ### DONE
+- Fix: tile selection sprite rendering is broken
+- Fix: spawning a harvester spawns one from every base
 - Add tile selection
 - Fix: linting
 - Fix: lots of duplication of rect and rendering code in entities

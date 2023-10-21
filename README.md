@@ -14,6 +14,7 @@ The spice must flow.
 * Constraints create interesting problems
 * Harvest, transport, and protect enough spice to the market to meet demand
 * Construction cost (time and spice)
+* Construction cost can be wasted (partial builds, time and spice lost)
 * Upkeep cost (spice)
 * Simple automatons (ex: harvester, builder, courier, etc.)
 * Theoretically infinite spice field
@@ -38,4 +39,4 @@ Previously
   * [lib/harvester.py](lib/harvester.py): Harvester unit
 * [lib/entity.py](lib/entity.py): entity class, basis of the scene graph
 * [lib/sprite.py](lib/sprite.py): sprite class
-* [TODO.txt](TODO.md): do, doing, done and dumped
+* [TODO.md](TODO.md): do, doing, done and dumped

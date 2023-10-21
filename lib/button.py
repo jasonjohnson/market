@@ -1,6 +1,6 @@
 import pygame
 
-from . import entity, sprite
+from . import base, entity, sprite, tile
 
 
 class Button(entity.Entity):
@@ -11,6 +11,9 @@ class Button(entity.Entity):
         self.color = pygame.Color('magenta')
         self.font = pygame.font.Font(None, 14)
         self.text = text
+        self.selected_tile: tile.Tile | None = None
+
+        self.subscribe('change_tile_selection', self.on_change_tile_selection)
 
     def is_hovering(self, position):
         return self.sprite.get_global_rect(
@@ -44,4 +47,15 @@ class Button(entity.Entity):
         pass
 
     def on_mouse_click(self):
-        self.emit('spawn_request')
+        if not self.selected_tile:
+            return
+
+        selected_base = self.selected_tile.get_child_of_kind(base.Base)
+
+        if not selected_base:
+            return
+
+        selected_base.spawn_harvester()
+
+    def on_change_tile_selection(self, selected_tile):
+        self.selected_tile = selected_tile

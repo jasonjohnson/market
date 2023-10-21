@@ -44,7 +44,7 @@ class Main(entity.Entity):
         self.add_child(panel_actions)
         self.add_child(panel_economy)
         self.add_child(panel.Panel(
-            text="SELECTION DETAILS",
+            text="TILE DETAILS",
             left=0,
             top=0,
             width=280,

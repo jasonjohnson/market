@@ -99,7 +99,7 @@ class TileGrid(entity.Entity):
         self.selected = self.grid[row][column]
         self.selected.select()
 
-        self.emit('change_selection', self.selected)
+        self.emit('change_tile_selection', self.selected)
 
 
 class Tile(entity.Entity):
@@ -108,7 +108,8 @@ class Tile(entity.Entity):
     def __init__(self, row, column):
         super().__init__(left=column * Tile.SIZE, top=row * Tile.SIZE)
 
-        self.sprite = sprite.Sprite(Tile.SIZE, Tile.SIZE)
+        self.sprite_selected = sprite.Sprite(Tile.SIZE, Tile.SIZE, pygame.Color('black'))
+        self.sprite_default = sprite.Sprite(Tile.SIZE, Tile.SIZE)
         self.selected = False
         self.row = row
         self.column = column
@@ -127,8 +128,10 @@ class Tile(entity.Entity):
         return None
 
     def render(self, surface):
-        # TODO debug sprites are inherently cached. Won't change when debug changes.
-        surface.blit(self.sprite.get_surface(debug=self.selected), self.get_position())
+        if self.selected:
+            surface.blit(self.sprite_selected.get_surface(), self.get_position())
+        else:
+            surface.blit(self.sprite_default.get_surface(), self.get_position())
 
     def select(self):
         self.selected = True

@@ -1,6 +1,6 @@
 import pygame
 
-from . import entity, sprite
+from . import base, entity, sprite
 
 
 class Label(entity.Entity):
@@ -14,15 +14,16 @@ class Label(entity.Entity):
         self.harvesters = 0
         self.spice = 0
 
-        self.subscribe('deposit', self.handle_deposit)
-        self.subscribe('spawn', self.handle_spawn)
+        self.subscribe('deposit', self.handle_base_activity)
+        self.subscribe('spawn', self.handle_base_activity)
 
-    def handle_spawn(self):
-        self.harvesters += 1
-        self.spice -= 1
+    def handle_base_activity(self):
+        self.harvesters = 0
+        self.spice = 0
 
-    def handle_deposit(self):
-        self.spice += 1
+        for b in base.Base.BASES:
+            self.harvesters += len(b.harvesters)
+            self.spice += len(b.spices)
 
     def render(self, surface):
         label = self.font.render(

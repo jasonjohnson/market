@@ -2,6 +2,8 @@ from . import entity, harvester, spice, sprite
 
 
 class Base(entity.Entity):
+    BASES = []
+
     def __init__(self, starting_spice):
         super().__init__(left=5, top=5)
 
@@ -13,7 +15,12 @@ class Base(entity.Entity):
         for _ in range(starting_spice):
             self.deposit_spice(spice.Spice())
 
-        self.subscribe('spawn_request', self.handle_spawn_request)
+        Base.BASES.append(self)
+
+    def __del__(self):
+        # This shouldn't happen, but will probably be important
+        # when bases can be destroyed.
+        Base.BASES.remove(self)
 
     def get_tile(self):
         return self.get_parent()
@@ -22,7 +29,7 @@ class Base(entity.Entity):
         self.spices.append(new_spice)
         self.emit('deposit')
 
-    def handle_spawn_request(self):
+    def spawn_harvester(self):
         if len(self.spices) < self.harvester_construction_cost:
             print("Not enough spices to build a harvester")
             return

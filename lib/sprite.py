@@ -2,24 +2,33 @@ import pygame
 
 
 class Sprite:
-    def __init__(self, width, height):
+    def __init__(self, width, height, debug_border_color_override=None):
         self.surface = pygame.Surface((width, height))
         self.width = width
         self.height = height
         self.debug_fill_color = pygame.Color('white')
         self.debug_border_color = pygame.Color('magenta')
+        self.debug_border_color_override = debug_border_color_override
         self.debug_border_width = 1
 
     def get_surface(self, debug=True):
         if debug:
             self.surface.fill(self.debug_fill_color)
 
-            pygame.draw.rect(
-                surface=self.surface,
-                rect=self.surface.get_rect(),
-                color=self.debug_border_color,
-                width=self.debug_border_width,
-            )
+            if self.debug_border_color_override:
+                pygame.draw.rect(
+                    surface=self.surface,
+                    rect=self.surface.get_rect(),
+                    color=self.debug_border_color_override,
+                    width=self.debug_border_width * 2,
+                )
+            else:
+                pygame.draw.rect(
+                    surface=self.surface,
+                    rect=self.surface.get_rect(),
+                    color=self.debug_border_color,
+                    width=self.debug_border_width,
+                )
 
         return self.surface
 
