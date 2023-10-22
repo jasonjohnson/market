@@ -42,6 +42,8 @@ class Builder(automaton.Automaton):
         return tile.tile_distance(tile_a, self.spawn_base.get_tile())
 
     def can_build(self) -> bool:
+        if not self.get_tile().has_building_capacity():
+            return False
         return self.distance_from_base() > self.wander_distance
 
     def can_destroy(self) -> bool:
@@ -51,22 +53,40 @@ class Builder(automaton.Automaton):
 
     def move_toward_build_site(self):
         tiles = self.get_tile().get_neighbor_tiles()
-        tile_options = []
+        primary = []
+        secondary = []
 
         for t in tiles:
+            if not t.has_unit_capacity():
+                continue
+
             if self.distance_from_base(t) > self.distance_from_base():
-                tile_options.append(t)
+                primary.append(t)
+            else:
+                secondary.append(t)
 
-        self.get_tile().remove_child(self)
+        self.move(primary, secondary)
 
-        random.choice(tile_options).add_child(self)
+    def move(self, *args) -> None:
+        moved = False
+
+        for c in args:
+            if len(c) > 0:
+                self.get_tile().remove_unit(self)
+                random.choice(c).add_unit(self)
+
+                moved = True
+                break
+
+        if not moved:
+            print('No moves available')
 
     def build(self):
         self.get_tile().add_child(base.Base(starting_spice=1))
         self.has_built = True
 
     def destroy(self):
-        self.get_parent().remove_child(self)
+        self.get_tile().remove_unit(self)
 
     def render(self, surface):
         surface.blit(self.sprite.get_surface(), self.get_position())

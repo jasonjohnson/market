@@ -115,12 +115,13 @@ class Tile(entity.Entity):
         self.selected = False
         self.row = row
         self.column = column
-        self.units = []
-        self.unit_capacity = 1
         self.north = None
         self.south = None
         self.east = None
         self.west = None
+        self.building = None
+        self.resource = None
+        self.unit = None
 
     def get_neighbor_tiles(self):
         return list(filter(None, [self.north, self.south, self.east, self.west]))
@@ -131,20 +132,50 @@ class Tile(entity.Entity):
                 return child
         return None
 
-    def has_unit_capacity(self):
-        if len(self.units) < self.unit_capacity:
-            return True
-        return False
+    def has_unit_capacity(self) -> bool:
+        if self.unit:
+            return False
+        return True
 
-    def add_unit(self, unit):
+    def add_unit(self, unit) -> None:
         if not self.has_unit_capacity():
-            raise ValueError("No unit capacity")
-        self.units.append(unit)
+            raise ValueError('No unit capacity')
+        self.unit = unit
         self.add_child(unit)
 
-    def remove_unit(self, unit):
-        self.units.remove(unit)
+    def remove_unit(self, unit) -> None:
+        self.unit = None
         self.remove_child(unit)
+
+    def has_building_capacity(self) -> bool:
+        if self.building:
+            return False
+        return True
+
+    def add_building(self, building) -> None:
+        if not self.has_building_capacity():
+            raise ValueError('No building capacity')
+        self.building = building
+        self.add_child(building)
+
+    def remove_building(self, building) -> None:
+        self.building = None
+        self.remove_child(building)
+
+    def has_resource_capacity(self) -> bool:
+        if self.resource:
+            return False
+        return True
+
+    def add_resource(self, resource) -> None:
+        if not self.has_resource_capacity():
+            raise ValueError('No resource capacity')
+        self.resource = resource
+        self.add_child(resource)
+
+    def remove_resource(self, resource) -> None:
+        self.resource = None
+        self.remove_child(resource)
 
     def render(self, surface):
         if self.selected:
@@ -157,7 +188,3 @@ class Tile(entity.Entity):
 
     def deselect(self):
         self.selected = False
-
-
-class TileSlot(entity.Entity):
-    pass

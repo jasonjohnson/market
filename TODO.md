@@ -14,6 +14,7 @@
 - Fix: window icon
 - Fix: Cyclic import (lib.base -> lib.harvester)
 - Fix: Duplicate code (lib.button & lib.label)
+- Fix: Duplicate code (lib.harvester & lib.builder "move" methods)
 
 
 ### DOING
@@ -21,6 +22,8 @@
 
 
 ### DONE
+- Fix: make tile building and resource capacity-aware
+- Fix: make builder and spice spawner capacity-aware
 - Fix: limit tile capacity to create bottlenecks
 - Fix: tile selection sprite rendering is broken
 - Fix: spawning a harvester spawns one from every base

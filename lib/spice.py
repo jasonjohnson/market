@@ -26,9 +26,12 @@ class SpiceSpawner(entity.Entity):
         if len(self.spices) == self.max_spices:
             return
 
+        random_tile = self.tile_grid.get_random_tile()
+
+        if not random_tile.has_resource_capacity():
+            return
+
         spice = Spice()
 
-        random_tile = self.tile_grid.get_random_tile()
-        random_tile.add_child(spice)
-
+        random_tile.add_resource(spice)
         self.spices.append(spice)
