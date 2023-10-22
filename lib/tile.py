@@ -106,13 +106,17 @@ class Tile(entity.Entity):
     SIZE = 20
 
     def __init__(self, row, column):
-        super().__init__(left=column * Tile.SIZE, top=row * Tile.SIZE)
+        left = column * Tile.SIZE
+        top = row * Tile.SIZE
+        super().__init__(left=left, top=top)
 
         self.sprite_selected = sprite.Sprite(Tile.SIZE, Tile.SIZE, pygame.Color('black'))
         self.sprite_default = sprite.Sprite(Tile.SIZE, Tile.SIZE)
         self.selected = False
         self.row = row
         self.column = column
+        self.units = []
+        self.unit_capacity = 1
         self.north = None
         self.south = None
         self.east = None
@@ -126,6 +130,21 @@ class Tile(entity.Entity):
             if isinstance(child, kind):
                 return child
         return None
+
+    def has_unit_capacity(self):
+        if len(self.units) < self.unit_capacity:
+            return True
+        return False
+
+    def add_unit(self, unit):
+        if not self.has_unit_capacity():
+            raise ValueError("No unit capacity")
+        self.units.append(unit)
+        self.add_child(unit)
+
+    def remove_unit(self, unit):
+        self.units.remove(unit)
+        self.remove_child(unit)
 
     def render(self, surface):
         if self.selected:

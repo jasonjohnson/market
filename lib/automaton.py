@@ -17,10 +17,10 @@ class Automaton(entity.Entity):
         'on_failure',
     ])
 
-    def __init__(self, action_interval=0.2):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-        self.action_interval = action_interval
+        self.action_interval = kwargs.get('action_interval', 0.2)
         self.action_interval_wait = 0.0
         self.state = None
         self.states = {}

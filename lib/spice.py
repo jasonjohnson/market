@@ -1,10 +1,12 @@
+import pygame
+
 from . import entity, sprite, tile
 
 
 class Spice(entity.Entity):
     def __init__(self):
-        super().__init__(left=2, top=2)
-        self.sprite = sprite.Sprite(5, 5)
+        super().__init__(left=8, top=2)
+        self.sprite = sprite.Sprite(5, 5, pygame.Color('black'))
 
     def render(self, surface):
         if not isinstance(self.get_parent(), tile.Tile):

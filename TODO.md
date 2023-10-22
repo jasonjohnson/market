@@ -6,7 +6,6 @@
 - Add spice graphic
 - Add harvester spawn button graphics (normal, hover, down)
 - Add harvester spawn sfx
-- Add "spawn Builder" button
 - Add a game start scene
 - Add a game end scene
 - Fix: harvesters are a little too dumb (give them short-term memory?)
@@ -18,10 +17,11 @@
 
 
 ### DOING
-- Fix: limit tile capacity to create bottlenecks
+- Add "spawn Builder" button
 
 
 ### DONE
+- Fix: limit tile capacity to create bottlenecks
 - Fix: tile selection sprite rendering is broken
 - Fix: spawning a harvester spawns one from every base
 - Add tile selection

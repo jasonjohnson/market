@@ -32,7 +32,7 @@ class Main(entity.Entity):
         panel_actions.add_child(button.Button("SPAWN HARVESTER"))
 
         panel_economy = panel.Panel(
-            text="ECONOMY",
+            text="BUDGET",
             left=0,
             top=480,
             width=280,
@@ -44,14 +44,14 @@ class Main(entity.Entity):
         self.add_child(panel_actions)
         self.add_child(panel_economy)
         self.add_child(panel.Panel(
-            text="TILE DETAILS",
+            text="DETAILS",
             left=0,
             top=0,
             width=280,
             height=240,
         ))
         self.add_child(panel.Panel(
-            text="BUILD QUEUE",
+            text="QUEUE",
             left=0,
             top=240,
             width=280,

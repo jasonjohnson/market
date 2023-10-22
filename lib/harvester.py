@@ -1,13 +1,15 @@
 import random
 
+import pygame
+
 from . import automaton, base, spice, sprite, tile
 
 
 class Harvester(automaton.Automaton):
     def __init__(self, spawn_base):
-        super().__init__()
+        super().__init__(left=8, top=8)
 
-        self.sprite = sprite.Sprite(5, 5)
+        self.sprite = sprite.Sprite(5, 5, pygame.Color('green'))
         self.spawn_base = spawn_base
 
         self.spice = None
@@ -63,42 +65,64 @@ class Harvester(automaton.Automaton):
 
     def move_toward_spice(self) -> None:
         tiles = self.get_tile().get_neighbor_tiles()
-        tiles_objective = []
+        primary = []
+        secondary = []
 
         for t in tiles:
+            # Filter out any surrounding tile that doesn't have capacity.
+            if not t.has_unit_capacity():
+                continue
+
+            # Spice is our objective. Prefer any tile containing spice.
             if t.get_child_of_kind(spice.Spice):
-                tiles_objective.append(t)
+                primary.append(t)
+            # Otherwise, any other tile.
+            else:
+                secondary.append(t)
 
-        self.get_tile().remove_child(self)
-
-        if len(tiles_objective) > 0:
-            random.choice(tiles_objective).add_child(self)
-        else:
-            random.choice(tiles).add_child(self)
+        self.move(primary, secondary)
 
     def move_toward_base(self) -> None:
         current = self.get_tile()
         current_distance = tile.tile_distance(current, self.get_base_tile())
 
         tiles = current.get_neighbor_tiles()
-        tiles_objective = []
-        tiles_closer = []
+        primary = []
+        secondary = []
+        tertiary = []
 
         for t in tiles:
-            d = tile.tile_distance(t, self.get_base_tile())
+            # Filter out any surrounding tile that doesn't have capacity.
+            if not t.has_unit_capacity():
+                continue
 
-            if d < current_distance:
-                tiles_closer.append(t)
-
+            # The base is our objective. Prefer a tile containing our
+            # spawn base.
+            #   TODO check that this base matches our spawn base
             if t.get_child_of_kind(base.Base):
-                tiles_objective.append(t)
+                primary.append(t)
+            # Alternatively, move closer to our spawn base.
+            elif tile.tile_distance(t, self.get_base_tile()) < current_distance:
+                secondary.append(t)
+            # Otherwise, any other tile.
+            else:
+                tertiary.append(t)
 
-        self.get_tile().remove_child(self)
+        self.move(primary, secondary, tertiary)
 
-        if len(tiles_objective) > 0:
-            random.choice(tiles_objective).add_child(self)
-        else:
-            random.choice(tiles_closer).add_child(self)
+    def move(self, *args) -> None:
+        moved = False
+
+        for c in args:
+            if len(c) > 0:
+                self.get_tile().remove_unit(self)
+                random.choice(c).add_unit(self)
+
+                moved = True
+                break
+
+        if not moved:
+            print('No moves available')
 
     def gather(self) -> None:
         found_spice = self.get_tile().get_child_of_kind(spice.Spice)

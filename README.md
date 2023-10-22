@@ -16,8 +16,15 @@ The spice must flow.
 * Construction cost (time and spice)
 * Construction cost can be wasted (partial builds, time and spice lost)
 * Upkeep cost (spice)
+* Starving upkeep kills (destroy units by underfunding upkeep)
 * Simple automatons (ex: harvester, builder, courier, etc.)
 * Theoretically infinite spice field
+
+#### Constraints
+
+* One unit per tile (under all conditions, ex: moving **and** spawning)
+* One building per tile
+* One resource per tile
 
 #### Units
 

@@ -1,13 +1,15 @@
 import random
 
+import pygame
+
 from . import automaton, base, sprite, tile
 
 
 class Builder(automaton.Automaton):
     def __init__(self, spawn_base):
-        super().__init__()
+        super().__init__(left=8, top=8)
 
-        self.sprite = sprite.Sprite(5, 5)
+        self.sprite = sprite.Sprite(5, 5, pygame.Color('yellow'))
         self.spawn_base = spawn_base
 
         self.wander_distance = 300
