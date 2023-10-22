@@ -33,9 +33,10 @@ The spice must flow.
 
 #### Current Gameplay
 
-![Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
+<video src="doc/screenshots/2023_10_22-progress.mp4"></video>
 
 Previously
+* [Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
 * [Gameplay as of October 14, 2023](doc/screenshots/2023_10_14-progress.gif)
 
 #### Pointers
