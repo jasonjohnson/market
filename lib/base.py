@@ -7,9 +7,9 @@ class Base(entity.Entity):
     BASES = []
 
     def __init__(self, starting_spice):
-        super().__init__(left=5, top=5)
+        super().__init__()
 
-        self.sprite = sprite.Sprite(10, 10, pygame.Color('red'))
+        self.sprites = sprite.SpriteSheet('tiles')
         self.harvesters = []
         self.harvester_construction_cost = 1
         self.spices = []
@@ -53,15 +53,4 @@ class Base(entity.Entity):
         del self.spices[:self.harvester_construction_cost]
 
     def render(self, surface):
-        # Get my position
-        # Get the position of each harvester
-        # Draw a line from me to them
-        for h in self.harvesters:
-            pygame.draw.line(
-                surface,
-                pygame.Color('red'),
-                h.get_position(),
-                self.get_position()
-            )
-
-        surface.blit(self.sprite.get_surface(), self.get_position())
+        surface.blit(self.sprites.get_surface('desert_building'), self.get_position())

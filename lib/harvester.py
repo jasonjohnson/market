@@ -7,9 +7,9 @@ from . import automaton, base, spice, sprite, tile
 
 class Harvester(automaton.Automaton):
     def __init__(self, spawn_base):
-        super().__init__(left=8, top=8)
+        super().__init__()
 
-        self.sprite = sprite.Sprite(5, 5, pygame.Color('green'))
+        self.sprites = sprite.SpriteSheet('tiles')
         self.spawn_base = spawn_base
 
         self.spice = None
@@ -137,4 +137,4 @@ class Harvester(automaton.Automaton):
         self.spice = None
 
     def render(self, surface):
-        surface.blit(self.sprite.get_surface(), self.get_position())
+        surface.blit(self.sprites.get_surface('desert_unit'), self.get_position())

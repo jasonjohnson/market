@@ -12,9 +12,6 @@ SCREEN_HEIGHT = 720
 if __name__ == "__main__":
     pygame.init()
 
-    # TODO enable scene switching somehow
-    current_scene = scene.Main()
-
     clock = pygame.time.Clock()
 
     surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -23,6 +20,9 @@ if __name__ == "__main__":
     # pygame.display.set_icon(None) TODO set icon
 
     events = []
+
+    # TODO enable scene switching somehow
+    current_scene = scene.Main()
 
     while True:
         delta = clock.tick() / 1000.0

@@ -112,6 +112,7 @@ class Tile(entity.Entity):
 
         self.sprite_selected = sprite.Sprite(Tile.SIZE, Tile.SIZE, pygame.Color('black'))
         self.sprite_default = sprite.Sprite(Tile.SIZE, Tile.SIZE)
+        self.sprites = sprite.SpriteSheet('tiles')
         self.selected = False
         self.row = row
         self.column = column
@@ -178,10 +179,8 @@ class Tile(entity.Entity):
         self.remove_child(resource)
 
     def render(self, surface):
-        if self.selected:
-            surface.blit(self.sprite_selected.get_surface(), self.get_position())
-        else:
-            surface.blit(self.sprite_default.get_surface(), self.get_position())
+        # TODO add selected sprite state
+        surface.blit(self.sprites.get_surface('desert'), self.get_position())
 
     def select(self):
         self.selected = True

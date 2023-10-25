@@ -5,14 +5,14 @@ from . import entity, sprite, tile
 
 class Spice(entity.Entity):
     def __init__(self):
-        super().__init__(left=8, top=2)
-        self.sprite = sprite.Sprite(5, 5, pygame.Color('black'))
+        super().__init__()
+        self.sprites = sprite.SpriteSheet('tiles')
 
     def render(self, surface):
         if not isinstance(self.get_parent(), tile.Tile):
             return
 
-        surface.blit(self.sprite.get_surface(), self.get_position())
+        surface.blit(self.sprites.get_surface('desert_spice'), self.get_position())
 
 
 class SpiceSpawner(entity.Entity):
