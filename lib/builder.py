@@ -7,9 +7,9 @@ from . import automaton, base, sprite, tile
 
 class Builder(automaton.Automaton):
     def __init__(self, spawn_base):
-        super().__init__(left=8, top=8)
+        super().__init__()
 
-        self.sprite = sprite.Sprite(5, 5, pygame.Color('yellow'))
+        self.sprites = sprite.SpriteSheet('tiles')
         self.spawn_base = spawn_base
 
         self.wander_distance = 300
@@ -89,4 +89,4 @@ class Builder(automaton.Automaton):
         self.get_tile().remove_unit(self)
 
     def render(self, surface):
-        surface.blit(self.sprite.get_surface(), self.get_position())
+        surface.blit(self.sprites.get_surface('desert_builder'), self.get_position())

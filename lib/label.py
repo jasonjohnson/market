@@ -1,38 +1,20 @@
 import pygame
 
-from . import base, entity, sprite
+from . import entity, sprite
 
 
 class Label(entity.Entity):
-    def __init__(self, text, width=200, height=20):
-        super().__init__(left=10, top=10)
+    FONT_SIZE = 7
 
-        self.sprite = sprite.Sprite(width, height)
-        self.color = pygame.Color('magenta')
-        self.font = pygame.font.Font(None, 14)
-        self.text = text
-        self.harvesters = 0
-        self.spice = 0
+    def __init__(self, text, left=0, top=0):
+        super().__init__(left=left, top=top)
 
-        self.subscribe('deposit', self.handle_base_activity)
-        self.subscribe('spawn', self.handle_base_activity)
+        self.sprites = sprite.SpriteSheet('font')
+        self.surface = pygame.Surface((len(text) * Label.FONT_SIZE, Label.FONT_SIZE), pygame.SRCALPHA, 32)
+        self.surface = self.surface.convert_alpha()
 
-    def handle_base_activity(self):
-        self.harvesters = 0
-        self.spice = 0
-
-        for b in base.Base.BASES:
-            self.harvesters += len(b.harvesters)
-            self.spice += len(b.spices)
+        for i, c in enumerate(text):
+            self.surface.blit(self.sprites.get_surface(c), (i * Label.FONT_SIZE, 0))
 
     def render(self, surface):
-        label = self.font.render(
-            self.text.format(
-                harvesters=self.harvesters,
-                spice=self.spice,
-            ),
-            False,
-            self.color
-        )
-
-        surface.blit(label, self.get_position())
+        surface.blit(self.surface, self.get_position())

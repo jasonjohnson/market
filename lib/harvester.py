@@ -137,4 +137,4 @@ class Harvester(automaton.Automaton):
         self.spice = None
 
     def render(self, surface):
-        surface.blit(self.sprites.get_surface('desert_unit'), self.get_position())
+        surface.blit(self.sprites.get_surface('desert_harvester'), self.get_position())

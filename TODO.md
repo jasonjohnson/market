@@ -1,17 +1,10 @@
 ### DO
 - Add build queue
-- Add a background graphic
-- Add base tile graphic (or a few)
-- Add harvester graphic
-- Add spice graphic
-- Add harvester spawn button graphics (normal, hover, down)
 - Add harvester spawn sfx
 - Add a game start scene
 - Add a game end scene
 - Fix: harvesters are a little too dumb (give them short-term memory?)
-- Fix: padding isn't working correctly
 - Fix: buttons and labels aren't specialized
-- Fix: window icon
 - Fix: Cyclic import (lib.base -> lib.harvester)
 - Fix: Duplicate code (lib.button & lib.label)
 - Fix: Duplicate code (lib.harvester & lib.builder "move" methods)
@@ -22,6 +15,12 @@
 
 
 ### DONE
+- Fix: window icon
+- Add harvester spawn button graphics (normal, hover, down)
+- Add spice graphic
+- Add harvester graphic
+- Add base tile graphic (or a few)
+- Add a background graphic
 - Fix: make tile building and resource capacity-aware
 - Fix: make builder and spice spawner capacity-aware
 - Fix: limit tile capacity to create bottlenecks
@@ -67,3 +66,4 @@
 ### DUMP
 - Capture video with pygame (low value, can only capture image of surface)
 - Fix: type hinting. Will use it only when it makes sense
+- Fix: padding isn't working correctly

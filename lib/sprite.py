@@ -67,8 +67,8 @@ class SpriteSheet:
                 sprite_width = m['width']
                 sprite_height = m['height']
 
-                columns = int(sheet_height / sprite_height)
-                rows = int(sheet_width / sprite_width)
+                rows = int(sheet_height / sprite_height)
+                columns = int(sheet_width / sprite_width)
 
                 # Generate sub-surfaces and default labels for every sprite
                 # in the sheet.

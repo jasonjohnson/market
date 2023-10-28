@@ -12,7 +12,7 @@ def tile_distance(tile_a, tile_b):
 
 class TileGrid(entity.Entity):
     def __init__(self, rows, columns):
-        super().__init__(left=10, top=10)
+        super().__init__(left=20, top=20)
 
         self.sprite = sprite.Sprite(rows * Tile.SIZE, columns * Tile.SIZE)
         self.selected = None
@@ -179,8 +179,10 @@ class Tile(entity.Entity):
         self.remove_child(resource)
 
     def render(self, surface):
-        # TODO add selected sprite state
-        surface.blit(self.sprites.get_surface('desert'), self.get_position())
+        if self.selected:
+            surface.blit(self.sprites.get_surface('desert_selected'), self.get_position())
+        else:
+            surface.blit(self.sprites.get_surface('desert'), self.get_position())
 
     def select(self):
         self.selected = True

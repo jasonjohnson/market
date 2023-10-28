@@ -1,0 +1,7 @@
+{
+  "height": 30,
+  "width": 250,
+  "labels": [
+    ["idle", "hover", "click"]
+  ]
+}

@@ -1,28 +1,37 @@
 import pygame
 
-from . import base, entity, sprite, tile
+from . import base, entity, sprite, tile, label
 
 
 class Button(entity.Entity):
-    def __init__(self, text, width=200, height=20):
-        super().__init__(left=10, top=10)
+    def __init__(self, text, left=0, top=0):
+        super().__init__(left=left, top=top)
 
-        self.sprite = sprite.Sprite(width, height)
-        self.color = pygame.Color('magenta')
-        self.font = pygame.font.Font(None, 14)
-        self.text = text
+        self.sprites = sprite.SpriteSheet('buttons')
+        self.sprite = self.sprites.get_surface('idle')
+
+        self.label = label.Label(text, left=10, top=11)
+        self.add_child(self.label)
+
         self.selected_tile: tile.Tile | None = None
 
         self.subscribe('change_tile_selection', self.on_change_tile_selection)
 
     def is_hovering(self, position):
-        return self.sprite.get_global_rect(
-            self.get_position()).collidepoint(position)
+        return pygame.Rect(
+            self.get_left(),
+            self.get_top(),
+            self.sprite.get_width(),
+            self.sprite.get_height()
+        ).collidepoint(position)
 
     def inputs(self, events):
         for e in events:
             if e.type == pygame.MOUSEMOTION:
-                self.on_mouse_hover()
+                if self.is_hovering(e.pos):
+                    self.on_mouse_hover()
+                else:
+                    self.on_mouse_exit()
             elif e.type == pygame.MOUSEBUTTONDOWN:
                 if self.is_hovering(e.pos) and e.button == 1:
                     self.on_mouse_down()
@@ -32,19 +41,19 @@ class Button(entity.Entity):
                     self.on_mouse_click()
 
     def render(self, surface):
-        label = self.font.render(self.text, False, self.color)
-
-        surface.blit(self.sprite.get_surface(), self.get_position())
-        surface.blit(label, self.get_position())
+        surface.blit(self.sprite, self.get_position())
 
     def on_mouse_down(self):
-        pass
+        self.sprite = self.sprites.get_surface('click')
 
     def on_mouse_up(self):
-        pass
+        self.sprite = self.sprites.get_surface('hover')
 
     def on_mouse_hover(self):
-        pass
+        self.sprite = self.sprites.get_surface('hover')
+
+    def on_mouse_exit(self):
+        self.sprite = self.sprites.get_surface('idle')
 
     def on_mouse_click(self):
         if not self.selected_tile:

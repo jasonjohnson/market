@@ -2,6 +2,7 @@
   "height": 20,
   "width": 20,
   "labels": [
-    ["desert", "desert_spice", "desert_building", "desert_unit"]
+    ["desert", "desert_spice", "desert_building", "desert_harvester", "desert_builder"],
+    ["desert_selected"]
   ]
 }
