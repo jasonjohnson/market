@@ -1,12 +1,20 @@
 ## Market: a simulation game of unknown scope.
 
+#### Current Gameplay
+
+![Gameplay as of October 29, 2023](doc/screenshots/2023_10_29-progress.gif)
+
+Previously
+* [Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
+* [Gameplay as of October 14, 2023](doc/screenshots/2023_10_14-progress.gif)
+
 #### Theme
 
 The spice must flow.
 
 #### Winning
 
-* Meet the demand of the spice market for 1 full year.
+* Meet the demand of the spice market before going bankrupt.
 
 #### Ideas
 
@@ -30,14 +38,6 @@ The spice must flow.
 
 * **Builder**: wander away from its spawn base, build a new base, and self-destruct
 * **Harvester**: wander around, gather spice, deposit spice at spawn base
-
-#### Current Gameplay
-
-![Gameplay as of October 29, 2023](doc/screenshots/2023_10_29-progress.gif)
-
-Previously
-* [Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
-* [Gameplay as of October 14, 2023](doc/screenshots/2023_10_14-progress.gif)
 
 #### Pointers
 
