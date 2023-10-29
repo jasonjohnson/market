@@ -1,4 +1,4 @@
-from . import base, button, builder, entity, label, panel, spice, sprite, tile
+from . import base, budget, button, builder, entity, label, panel, spice, sprite, tile
 
 
 class Main(entity.Entity):
@@ -7,6 +7,11 @@ class Main(entity.Entity):
 
         self.sprites = sprite.SpriteSheet('background')
 
+        tile_grid = tile.TileGrid(34, 34)
+
+        # 10% of tiles have spice. No idea if this is a good value.
+        spice_spawner = spice.SpiceSpawner(tile_grid, int((34 * 34) * 0.1))
+
         panel_spice_field = panel.Panel(
             text="SPICE FIELD",
             left=280,
@@ -14,12 +19,6 @@ class Main(entity.Entity):
             width=720,
             height=720,
         )
-
-        tile_grid = tile.TileGrid(34, 34)
-
-        # 10% of tiles have spice. No idea if this is a good value.
-        spice_spawner = spice.SpiceSpawner(tile_grid, int((34 * 34) * 0.1))
-
         panel_spice_field.add_child(tile_grid)
         panel_spice_field.add_child(spice_spawner)
 
@@ -34,6 +33,8 @@ class Main(entity.Entity):
         panel_actions.add_child(label.Label("ACTIONS", left=10, top=20))
         panel_actions.add_child(button.Button("SPAWN HARVESTER", left=10, top=30))
 
+        budget_enforcer = budget.BudgetEnforcer()
+
         panel_budget = panel.Panel(
             text="BUDGET",
             left=1000,
@@ -42,6 +43,7 @@ class Main(entity.Entity):
             height=360,
         )
         panel_budget.add_child(label.Label("BUDGET", left=10, top=15))
+        panel_budget.add_child(budget_enforcer)
 
         panel_economy = panel.Panel(
             text="ECONOMY",

@@ -1,5 +1,3 @@
-import pygame
-
 from . import entity, sprite, tile
 
 
@@ -22,16 +20,24 @@ class SpiceSpawner(entity.Entity):
         self.max_spices = max_spices
         self.spices = []
 
-    def update(self, _delta):
+    def generate(self):
         if len(self.spices) == self.max_spices:
             return
 
-        random_tile = self.tile_grid.get_random_tile()
+        self.spices.append(Spice())
 
-        if not random_tile.has_resource_capacity():
-            return
+    def place(self):
+        for s in self.spices:
+            if s.get_parent():
+                continue
 
-        spice = Spice()
+            random_tile = self.tile_grid.get_random_tile()
 
-        random_tile.add_resource(spice)
-        self.spices.append(spice)
+            if not random_tile.has_resource_capacity():
+                return
+
+            random_tile.add_resource(s)
+
+    def update(self, _delta):
+        self.generate()
+        self.place()

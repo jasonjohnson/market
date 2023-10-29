@@ -1,6 +1,4 @@
-import pygame
-
-from . import entity, sprite
+from . import entity
 
 
 class Panel(entity.Entity):

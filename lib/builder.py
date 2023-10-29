@@ -1,7 +1,5 @@
 import random
 
-import pygame
-
 from . import automaton, base, sprite, tile
 
 

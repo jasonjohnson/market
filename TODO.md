@@ -3,8 +3,10 @@
 - Add harvester spawn sfx
 - Add a game start scene
 - Add a game end scene
+- Add probability of units exploding (catastrophic failure, total loss of investment)
+- Add probability of units breaking down (occupying a tile)
 - Fix: harvesters are a little too dumb (give them short-term memory?)
-- Fix: buttons and labels aren't specialized
+- Fix: buttons aren't specialized
 - Fix: Cyclic import (lib.base -> lib.harvester)
 - Fix: Duplicate code (lib.button & lib.label)
 - Fix: Duplicate code (lib.harvester & lib.builder "move" methods)
@@ -15,6 +17,12 @@
 
 
 ### DONE
+- Add a budget entity that evaluates the budget every N seconds
+- Add spice respawning rate
+- Add harvester destruction based on upkeep shortfall
+- Add explosion effect when harvesters die
+- Add budget enforcement
+- Fix: labels aren't specialized
 - Fix: window icon
 - Add harvester spawn button graphics (normal, hover, down)
 - Add spice graphic

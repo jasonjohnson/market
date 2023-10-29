@@ -1,11 +1,12 @@
 import random
 
-import pygame
-
-from . import automaton, base, spice, sprite, tile
+from . import automaton, base, entity, spice, sprite, tile
 
 
 class Harvester(automaton.Automaton):
+    SPAWN_COST = 1
+    UPKEEP_COST = 1
+
     def __init__(self, spawn_base):
         super().__init__()
 
@@ -44,6 +45,9 @@ class Harvester(automaton.Automaton):
             state_b='finding',
             test=self.can_repeat,
         )
+
+        self.ref_delay = 5.0
+        self.ref_delay_timer = 0.0
 
     def get_tile(self) -> tile.Tile:
         return self.get_parent()
@@ -128,13 +132,66 @@ class Harvester(automaton.Automaton):
         found_spice = self.get_tile().get_child_of_kind(spice.Spice)
 
         self.get_tile().remove_child(found_spice)
+        self.add_child(found_spice)
         self.spice = found_spice
 
     def deposit(self) -> None:
         found_base = self.get_tile().get_child_of_kind(base.Base)
-        found_base.deposit_spice(self.spice)
+        found_base.deposit_spice(1)
 
+        self.remove_child(self.spice)
         self.spice = None
+
+    def self_destruct(self):
+        self.spice = None
+        self.get_tile().add_child(HarvesterExplosion(
+            self.get_left(),
+            self.get_top()
+        ))
+        self.get_tile().remove_unit(self)
 
     def render(self, surface):
         surface.blit(self.sprites.get_surface('desert_harvester'), self.get_position())
+
+
+class Particle:
+    def __init__(self, particle_sprite, left, top):
+        self.sprite = particle_sprite
+        self.left = left
+        self.left_speed = random.uniform(-0.5, 0.5)
+        self.top = top
+        self.top_speed = random.uniform(-0.5, 0.5)
+
+
+class HarvesterExplosion(entity.Entity):
+    def __init__(self, left=0, top=0):
+        super().__init__(left=left, top=top)
+
+        self.sprite = sprite.SpriteSheet('particles').get_surface('harvester')
+        self.particles = []
+        self.life = 1.0
+
+        for _ in range(10):
+            self.particles.append(Particle(
+                self.sprite,
+                left,
+                top
+            ))
+
+    def is_alive(self):
+        return self.life > 0.0
+
+    def update(self, delta):
+        if not self.is_alive():
+            self.get_parent().remove_child(self)
+
+        self.life -= delta
+        self.sprite.set_alpha(int(self.life * 255))
+
+        for p in self.particles:
+            p.left += p.left_speed
+            p.top += p.top_speed
+
+    def render(self, surface):
+        for p in self.particles:
+            surface.blit(p.sprite, (p.left, p.top))
