@@ -4,6 +4,9 @@ from . import automaton, base, sprite, tile
 
 
 class Builder(automaton.Automaton):
+    SPAWN_COST = 1
+    UPKEEP_COST = 1
+
     def __init__(self, spawn_base):
         super().__init__()
 
@@ -80,7 +83,7 @@ class Builder(automaton.Automaton):
             print('No moves available')
 
     def build(self):
-        self.get_tile().add_child(base.Base(starting_spice=1))
+        self.get_tile().add_building(base.Base(starting_spice=1))
         self.has_built = True
 
     def destroy(self):

@@ -5,11 +5,12 @@ class Main(entity.Entity):
     def __init__(self):
         super().__init__()
 
+        self.subscribe('change_tile_selection', self.handle_tile_selection)
+
         self.sprites = sprite.SpriteSheet('background')
+        self.selected_tile = None
 
         tile_grid = tile.TileGrid(34, 34)
-
-        # 10% of tiles have spice. No idea if this is a good value.
         spice_spawner = spice.SpiceSpawner(tile_grid, int((34 * 34) * 0.1))
 
         panel_spice_field = panel.Panel(
@@ -31,7 +32,8 @@ class Main(entity.Entity):
         )
 
         panel_actions.add_child(label.Label("ACTIONS", left=10, top=20))
-        panel_actions.add_child(button.Button("SPAWN HARVESTER", left=10, top=30))
+        panel_actions.add_child(button.Button("SPAWN HARVESTER", left=10, top=30, action=self.do_spawn_harvester))
+        panel_actions.add_child(button.Button("SPAWN BUILDER", left=10, top=65, action=self.do_spawn_builder))
 
         budget_enforcer = budget.BudgetEnforcer()
 
@@ -81,8 +83,33 @@ class Main(entity.Entity):
 
         b = base.Base(starting_spice=1)
 
-        tile_grid.get_tile(0, 0).add_child(b)
-        tile_grid.get_tile(0, 0).add_child(builder.Builder(b))
+        tile_grid.get_tile(0, 0).add_building(b)
+        tile_grid.get_tile(0, 0).add_unit(builder.Builder(b))
+
+    def handle_tile_selection(self, selected_tile):
+        self.selected_tile = selected_tile
+
+    def do_spawn_harvester(self):
+        if not self.selected_tile:
+            return
+
+        selected_base = self.selected_tile.get_child_of_kind(base.Base)
+
+        if not selected_base:
+            return
+
+        selected_base.spawn_harvester()
+
+    def do_spawn_builder(self):
+        if not self.selected_tile:
+            return
+
+        selected_base = self.selected_tile.get_child_of_kind(base.Base)
+
+        if not selected_base:
+            return
+
+        selected_base.spawn_builder()
 
     def render(self, surface):
         surface.blit(self.sprites.get_surface('background'), self.get_position())

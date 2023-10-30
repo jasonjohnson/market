@@ -1,6 +1,6 @@
 import random
 
-from . import entity, harvester, spice, sprite
+from . import builder, entity, harvester, sprite
 
 
 class Base(entity.Entity):
@@ -12,6 +12,7 @@ class Base(entity.Entity):
         Base.BASES.append(self)
 
         self.sprites = sprite.SpriteSheet('tiles')
+        self.builders = []
         self.harvesters = []
         self.harvester_construction_cost = 1
         self.spices = starting_spice
@@ -44,12 +45,10 @@ class Base(entity.Entity):
         self.spices = 0
 
     def spawn_harvester(self):
-        if self.spices < self.harvester_construction_cost:
+        if self.spices < harvester.Harvester.SPAWN_COST:
             print('Not enough spices to build a harvester')
             return
 
-        # Interesting. When the capacity is limited, spawning of the
-        # same unit type is also inhibited! This is good.
         if not self.get_tile().has_unit_capacity():
             print('Not enough tile capacity to spawn a harvester')
             return
@@ -57,12 +56,23 @@ class Base(entity.Entity):
         new_harvester = harvester.Harvester(self)
 
         self.harvesters.append(new_harvester)
-
         self.get_tile().add_unit(new_harvester)
-
-        self.emit('spawn')
-
         self.debit_spice(harvester.Harvester.SPAWN_COST)
+
+    def spawn_builder(self):
+        if self.spices < builder.Builder.SPAWN_COST:
+            print('Not enough spices to build a builder')
+            return
+
+        if not self.get_tile().has_unit_capacity():
+            print('Not enough tile capacity to spawn a builder')
+            return
+
+        new_builder = builder.Builder(self)
+
+        self.builders.append(new_builder)
+        self.get_tile().add_unit(new_builder)
+        self.debit_spice(builder.Builder.SPAWN_COST)
 
     def compute_upkeep(self) -> int:
         return len(self.harvesters) * harvester.Harvester.UPKEEP_COST

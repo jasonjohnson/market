@@ -10,6 +10,9 @@ class Spice(entity.Entity):
         if not isinstance(self.get_parent(), tile.Tile):
             return
 
+        if not self.get_parent().is_visible():
+            return
+
         surface.blit(self.sprites.get_surface('desert_spice'), self.get_position())
 
 

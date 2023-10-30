@@ -4,8 +4,13 @@ from . import base, entity, sprite, tile, label
 
 
 class Button(entity.Entity):
-    def __init__(self, text, left=0, top=0):
+    def __init__(self, text, left=0, top=0, action=None):
         super().__init__(left=left, top=top)
+
+        if not action:
+            self.action = self.no_op
+        else:
+            self.action = action
 
         self.sprites = sprite.SpriteSheet('buttons')
         self.sprite = self.sprites.get_surface('idle')
@@ -13,9 +18,8 @@ class Button(entity.Entity):
         self.label = label.Label(text, left=10, top=11)
         self.add_child(self.label)
 
-        self.selected_tile: tile.Tile | None = None
-
-        self.subscribe('change_tile_selection', self.on_change_tile_selection)
+    def no_op(self):
+        return
 
     def is_hovering(self, position):
         return pygame.Rect(
@@ -56,15 +60,5 @@ class Button(entity.Entity):
         self.sprite = self.sprites.get_surface('idle')
 
     def on_mouse_click(self):
-        if not self.selected_tile:
-            return
+        self.action()
 
-        selected_base = self.selected_tile.get_child_of_kind(base.Base)
-
-        if not selected_base:
-            return
-
-        selected_base.spawn_harvester()
-
-    def on_change_tile_selection(self, selected_tile):
-        self.selected_tile = selected_tile

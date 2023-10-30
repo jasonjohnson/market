@@ -1,3 +1,4 @@
+import collections
 import random
 
 from . import automaton, base, entity, spice, sprite, tile
@@ -14,6 +15,8 @@ class Harvester(automaton.Automaton):
         self.spawn_base = spawn_base
 
         self.spice = None
+
+        self.memory = collections.deque(maxlen=2)
 
         self.add_state('finding', initial=True)
         self.add_state('gathering', on_enter=self.gather)
@@ -71,6 +74,7 @@ class Harvester(automaton.Automaton):
         tiles = self.get_tile().get_neighbor_tiles()
         primary = []
         secondary = []
+        tertiary = []
 
         for t in tiles:
             # Filter out any surrounding tile that doesn't have capacity.
@@ -80,11 +84,14 @@ class Harvester(automaton.Automaton):
             # Spice is our objective. Prefer any tile containing spice.
             if t.get_child_of_kind(spice.Spice):
                 primary.append(t)
+            # Next, prefer tiles we don't remember.
+            elif t not in self.memory:
+                secondary.append(t)
             # Otherwise, any other tile.
             else:
-                secondary.append(t)
+                tertiary.append(t)
 
-        self.move(primary, secondary)
+        self.move(primary, secondary, tertiary)
 
     def move_toward_base(self) -> None:
         current = self.get_tile()
@@ -120,7 +127,10 @@ class Harvester(automaton.Automaton):
         for c in args:
             if len(c) > 0:
                 self.get_tile().remove_unit(self)
-                random.choice(c).add_unit(self)
+                t = random.choice(c)
+                t.add_unit(self)
+
+                self.memory.append(t)
 
                 moved = True
                 break

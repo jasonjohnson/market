@@ -110,10 +110,11 @@ class Tile(entity.Entity):
         top = row * Tile.SIZE
         super().__init__(left=left, top=top)
 
-        self.sprite_selected = sprite.Sprite(Tile.SIZE, Tile.SIZE, pygame.Color('black'))
-        self.sprite_default = sprite.Sprite(Tile.SIZE, Tile.SIZE)
         self.sprites = sprite.SpriteSheet('tiles')
         self.selected = False
+        self.visible = True
+        self.visible_timeout = 1.0
+        self.visible_timer = 0.0
         self.row = row
         self.column = column
         self.north = None
@@ -179,10 +180,46 @@ class Tile(entity.Entity):
         self.remove_child(resource)
 
     def render(self, surface):
-        if self.selected:
-            surface.blit(self.sprites.get_surface('desert_selected'), self.get_position())
+        if self.is_visible():
+            if self.selected:
+                surface.blit(self.sprites.get_surface('desert_selected'), self.get_position())
+            else:
+                surface.blit(self.sprites.get_surface('desert'), self.get_position())
         else:
-            surface.blit(self.sprites.get_surface('desert'), self.get_position())
+            if self.is_selected():
+                surface.blit(self.sprites.get_surface('hidden_selected'), self.get_position())
+            else:
+                surface.blit(self.sprites.get_surface('hidden'), self.get_position())
+
+    def is_visible(self):
+        return self.visible
+
+    def update(self, delta):
+        super().update(delta)
+
+        seen = False
+
+        if not self.has_unit_capacity():
+            seen = True
+
+        if not self.has_building_capacity():
+            seen = True
+
+        for t in self.get_neighbor_tiles():
+            if not t.has_unit_capacity():
+                seen = True
+
+        if not seen:
+            if self.visible_timer <= 0.0:
+                self.visible = False
+            else:
+                self.visible_timer -= delta
+        else:
+            self.visible = True
+            self.visible_timer = self.visible_timeout
+
+    def is_selected(self):
+        return self.selected
 
     def select(self):
         self.selected = True
