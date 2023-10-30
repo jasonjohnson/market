@@ -1,3 +1,5 @@
+import random
+
 from . import base, budget, button, builder, entity, label, panel, spice, sprite, tile
 
 
@@ -81,10 +83,10 @@ class Main(entity.Entity):
         self.add_child(panel_details)
         self.add_child(panel_queue)
 
-        b = base.Base(starting_spice=1)
-
-        tile_grid.get_tile(0, 0).add_building(b)
-        tile_grid.get_tile(0, 0).add_unit(builder.Builder(b))
+        tile_grid.get_tile(
+            row=random.randint(0, 33),
+            column=random.randint(0, 33)
+        ).add_building(base.Base(starting_spice=1))
 
     def handle_tile_selection(self, selected_tile):
         self.selected_tile = selected_tile
