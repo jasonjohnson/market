@@ -5,10 +5,13 @@
 - Add a game end scene
 - Add probability of units exploding (catastrophic failure, total loss of investment)
 - Add probability of units breaking down (occupying a tile)
+- Fix: budget enforcement can happen really fast after the first unit is built
+- Fix: Are spice respawning randomly? Seems lopsided.
 - Fix: Cyclic import (lib.base -> lib.harvester)
 - Fix: Duplicate code (lib.button & lib.label)
 - Fix: Duplicate code (lib.harvester & lib.builder "move" methods)
-- Fix: Are spice respawning randomly? Seems lopsided.
+- Fix: TODO file needs to be a changelog
+- Fix: bankrupt bases need to decay (or, share spice with other bases)
 
 
 ### DOING

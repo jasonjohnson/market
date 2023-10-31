@@ -2,9 +2,10 @@
 
 #### Current Gameplay
 
-![Gameplay as of October 29, 2023](doc/screenshots/2023_10_29-progress.gif)
+![Gameplay as of October 30, 2023](doc/screenshots/2023_10_30-progress.gif)
 
 Previously
+* [Gameplay as of October 29, 2023](doc/screenshots/2023_10_29-progress.gif)
 * [Gameplay as of October 21, 2023](doc/screenshots/2023_10_21-progress.gif)
 * [Gameplay as of October 14, 2023](doc/screenshots/2023_10_14-progress.gif)
 
