@@ -1,7 +1,8 @@
 import collections
 import random
 
-from . import automaton, base, entity, spice, sprite, tile
+from lib import base, spice, tile
+from lib.core import automaton, entity, sprite
 
 
 class Harvester(automaton.Automaton):

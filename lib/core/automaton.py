@@ -1,6 +1,6 @@
 import collections
 
-from . import entity
+from lib.core import entity
 
 
 class Automaton(entity.Entity):

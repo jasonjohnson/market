@@ -1,4 +1,5 @@
-from . import base, entity
+from lib import base
+from lib.core import entity
 
 
 class BudgetEnforcer(entity.Entity):

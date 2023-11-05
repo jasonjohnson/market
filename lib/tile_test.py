@@ -1,6 +1,6 @@
 import unittest
 
-from . import base, tile, harvester
+from lib import base, tile, harvester
 
 
 class TileTest(unittest.TestCase):

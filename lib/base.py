@@ -1,6 +1,7 @@
 import random
 
-from . import builder, entity, harvester, sprite
+from lib import builder, harvester
+from lib.core import entity, sprite
 
 
 class Base(entity.Entity):

@@ -1,6 +1,10 @@
 import random
 
-from . import base, budget, button, builder, entity, label, panel, spice, sprite, tile
+import pygame
+
+from lib import base, budget, spice, tile
+from lib.core import entity, sprite
+from lib.gui import button, panel, label, layout
 
 
 class Main(entity.Entity):
@@ -115,3 +119,39 @@ class Main(entity.Entity):
 
     def render(self, surface):
         surface.blit(self.sprites.get_surface('background'), self.get_position())
+
+
+class TestGUI(entity.Entity):
+    def __init__(self):
+        super().__init__()
+
+        self.sprites = sprite.SpriteSheet('gui_debug')
+
+        self.v_layout = layout.VLayout(left=5, top=5)
+
+        self.v_layout.add(button.Button('INCREASE LAYOUT PADDING', action=self.increase_padding))
+        self.v_layout.add(button.Button('DECREASE LAYOUT PADDING', action=self.decrease_padding))
+        self.v_layout.add(button.Button('A VERY VERY VERY LONG LABEL THAT TESTS THE 9-SLICE STRETCH'))
+        self.v_layout.add(button.Button('$ % / - + 0 1 2 3 4'))
+        self.v_layout.add(button.Button('A BUTTON WITH ARBITRARY OFFSETS'))
+
+        self.add_child(self.v_layout)
+
+        self.h_layout = layout.HLayout()
+        self.h_layout.add(button.Button('BEEP BOOP 1'))
+        self.h_layout.add(button.Button('BEEP BOOP 2'))
+        self.h_layout.add(button.Button('BEEP BOOP 3'))
+        self.h_layout.add(button.Button('BEEP BOOP 4'))
+
+        self.v_layout.add(self.h_layout)
+
+    def decrease_padding(self):
+        self.v_layout.padding -= 1
+        self.h_layout.padding -= 1
+
+    def increase_padding(self):
+        self.v_layout.padding += 1
+        self.h_layout.padding += 1
+
+    def render(self, surface):
+        surface.fill(pygame.Color('white'))

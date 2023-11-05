@@ -43,9 +43,9 @@ The spice must flow.
 #### Pointers
 
 * [main.py](main.py): game entry point
-* [lib/automaton.py](lib/automaton.py): finite state machine class
+* [lib/core/automaton.py](lib/core/automaton.py): finite state machine class
   * [lib/builder.py](lib/builder.py): Builder unit
   * [lib/harvester.py](lib/harvester.py): Harvester unit
-* [lib/entity.py](lib/entity.py): entity class, basis of the scene graph
-* [lib/sprite.py](lib/sprite.py): sprite class
+* [lib/core/entity.py](lib/core/entity.py): entity class, basis of the scene graph
+* [lib/core/sprite.py](lib/core/sprite.py): sprite class
 * [TODO.md](TODO.md): do, doing, done and dumped

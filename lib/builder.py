@@ -1,6 +1,7 @@
 import random
 
-from . import automaton, base, sprite, tile
+from lib import base, tile
+from lib.core import automaton, sprite
 
 
 class Builder(automaton.Automaton):

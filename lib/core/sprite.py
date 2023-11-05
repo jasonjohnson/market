@@ -53,7 +53,7 @@ class SpriteSheet:
         return '{}_{}'.format(row, column)
 
     def load_sheet(self):
-        resources = os.path.join(os.path.dirname(__file__), os.pardir, 'res')
+        resources = os.path.join(os.path.dirname(__file__), os.pardir, '..', 'res')
 
         file_image = os.path.join(resources, self.name + '.png')
         file_metadata = os.path.join(resources, self.name + '.json')

@@ -1,8 +1,10 @@
 import random
 
+# TODO move this into the core lib. Probably need an "events" module in the
+#  core lib, and the main game loop needs to handle events more efficiently.
 import pygame
 
-from . import entity, sprite
+from lib.core import entity, sprite
 
 
 def tile_distance(tile_a, tile_b):
@@ -76,6 +78,7 @@ class TileGrid(entity.Entity):
 
     def inputs(self, events):
         for e in events:
+            # TODO Use of pygame should be in "core".
             if e.type == pygame.MOUSEBUTTONUP:
                 if self.is_hovering(e.pos) and e.button == 1:
                     left, top = e.pos

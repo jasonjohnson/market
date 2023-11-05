@@ -12,7 +12,10 @@
 - Fix: Duplicate code (lib.harvester & lib.builder "move" methods)
 - Fix: TODO file needs to be a changelog
 - Fix: bankrupt bases need to decay (or, share spice with other bases)
-
+- Add "tab" key switching between bases
+- Add spice demand. Increases over time, fluctuates
+- Add points system based on meeting (or not meeting) spice demand
+- Add seasonal spice demand
 
 ### DOING
 - Fix: builder units are too dumb (wandering into a corner, getting stuck)

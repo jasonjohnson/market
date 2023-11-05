@@ -1,13 +1,27 @@
 """Main"""
+import argparse
+import sys
 
 import pygame
 
-from lib import entity, scene, sprite
+from lib import scene
+from lib.core import entity, sprite
+
+ARGS = argparse.ArgumentParser()
+ARGS.add_argument('-s', '--scene', default='main', action='store')
+
 
 WINDOW_CAPTION = "Spice Market"
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
+
+SCENES = {
+    'main': scene.Main,
+    'test_gui': scene.TestGUI,
+}
+
+SCENE_DEFAULT = 'main'
 
 if __name__ == "__main__":
     pygame.init()
@@ -19,9 +33,10 @@ if __name__ == "__main__":
     pygame.display.set_caption(WINDOW_CAPTION)
     pygame.display.set_icon(sprite.SpriteSheet('icon').get_surface('app'))
 
+    args = ARGS.parse_args()
     events = []
 
-    current_scene = scene.Main()
+    current_scene = SCENES[args.scene]()
 
     while True:
         delta = clock.tick() / 1000.0

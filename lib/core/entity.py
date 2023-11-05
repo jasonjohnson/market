@@ -13,11 +13,10 @@ def gather_entities(root_entity):
 class Entity:
     BUS = collections.defaultdict(list)
 
-    def __init__(self, left=0, top=0, padding=0, parent=None):
+    def __init__(self, left=0, top=0, parent=None):
         self.parent = parent
         self.left = left
         self.top = top
-        self.padding = padding
         self.children = []
 
     def get_parent(self):
@@ -53,6 +52,12 @@ class Entity:
         if not self.parent:
             raise LookupError("Entity has no parent. Cannot add sibling.")
         self.parent.add_child(sibling)
+
+    def set_left(self, left):
+        self.left = left
+
+    def set_top(self, top):
+        self.top = top
 
     def set_position(self, left, top):
         self.left = left

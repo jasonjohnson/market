@@ -1,4 +1,5 @@
-from . import entity, sprite, tile
+from lib import tile
+from lib.core import entity, sprite
 
 
 class Spice(entity.Entity):
