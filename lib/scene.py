@@ -4,7 +4,7 @@ import pygame
 
 from lib import base, budget, spice, tile
 from lib.core import entity, sprite
-from lib.gui import button, panel, label, layout
+from lib.gui import button, panel, label, layout, progress_bar
 
 
 class Main(entity.Entity):
@@ -144,6 +144,7 @@ class TestGUI(entity.Entity):
         self.h_layout.add(button.Button('BEEP BOOP 4'))
 
         self.v_layout.add(self.h_layout)
+        self.v_layout.add(progress_bar.ProgressBar(binding=self.get_progress))
 
     def decrease_padding(self):
         self.v_layout.padding -= 1
@@ -152,6 +153,9 @@ class TestGUI(entity.Entity):
     def increase_padding(self):
         self.v_layout.padding += 1
         self.h_layout.padding += 1
+
+    def get_progress(self):
+        return random.choice([0.0, 0.1, 0.2, 1.0])
 
     def render(self, surface):
         surface.fill(pygame.Color('white'))

@@ -84,6 +84,36 @@
       "button_sw_click",
       "button_s_click",
       "button_se_click"
-    ]
+    ],
+    [],
+    [],
+    [],
+    [
+      "progress_frame_nw",
+      "progress_frame_n",
+      "progress_frame_ne",
+      "progress_bar_nw",
+      "progress_bar_n",
+      "progress_bar_ne"
+    ],
+    [
+      "progress_frame_w",
+      "progress_frame_c",
+      "progress_frame_e",
+      "progress_bar_w",
+      "progress_bar_c",
+      "progress_bar_e"
+    ],
+    [
+      "progress_frame_sw",
+      "progress_frame_s",
+      "progress_frame_se",
+      "progress_bar_sw",
+      "progress_bar_s",
+      "progress_bar_se"
+    ],
+    [],
+    [],
+    []
   ]
 }

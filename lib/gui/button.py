@@ -117,7 +117,7 @@ class Button(entity.Entity):
         surface.blit(self.sprites['nw'][self.sheet_state], (left, top))
         surface.blit(self.sprites['ne'][self.sheet_state], (left + width - 7, top))
         surface.blit(self.sprites['w'][self.sheet_state], (left, top + 7))
-        surface.blit(self.sprites['c'][self.sheet_state], (left + 7, top + 7))
+
         surface.blit(self.sprites['e'][self.sheet_state], (left + width - 7, top + 7))
         surface.blit(self.sprites['sw'][self.sheet_state], (left, top + height - 7))
         surface.blit(self.sprites['se'][self.sheet_state], (left + width - 7, top + height - 7))
@@ -125,6 +125,7 @@ class Button(entity.Entity):
         # The sections that "stretch" horizontally.
         for i in range(int((width - 14) / 7)):
             surface.blit(self.sprites['n'][self.sheet_state], (left + 7 + i * 7, top))
+            surface.blit(self.sprites['c'][self.sheet_state], (left + 7 + i * 7, top + 7))
             surface.blit(self.sprites['s'][self.sheet_state], (left + 7 + i * 7, top + height - 7))
 
     def on_mouse_down(self):
